@@ -1,0 +1,89 @@
+.overlay{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1.5fr 8fr 3fr;
+    height: 100%;
+}
+
+.DrinksKnapper{
+    position: relative;
+    z-index: 2;
+    margin: 30px;
+    width: 17%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.arrowContainer {
+    display: flex;
+    align-items: center; /* Centrerer .Arrows vertikalt */
+    justify-content: space-between; /* Sørger for, at pilene er placeret korrekt */
+}
+
+.Arrows {
+    background: none;
+    border: none;
+    position: relative;
+    z-index: 2;
+    width: 90% !important;
+    height: 40% !important;
+    display: flex;
+    align-items: center; /* Centrerer indholdet i .Arrows */
+    justify-content: center; /* Centrerer indholdet horisontalt */
+}
+
+.Arrows:hover{
+    scale: 1.2;
+}
+
+.ButtonContainer{
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: 1fr 8fr 1fr;
+    max-height: 100%;
+}
+
+.DrinksContainer {
+    display: flex;
+    justify-content: center; /* Centrerer knapperne vandret */
+    align-items: flex-start; /* Justerer indholdet i toppen */
+    gap: 20px; /* Afstand mellem knapper */
+}
+
+.DrinksKnapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrerer indholdet horisontalt */
+    justify-content: space-between; /* Sørger for, at h3 er i toppen, og billedet er i bunden */
+    height: 100%; /* Sørger for, at alle knapper har samme højde */
+}
+
+h3 {
+    min-height: 40px; /* Sikrer ensartet højde på overskrifter */
+    text-align: center; /* Centrerer teksten */
+    margin: 100px 0 0;
+}
+
+img {
+    align-self: flex-end; /* Sørger for, at billedet starter samme sted i bunden */
+    max-width: 100%; /* Sikrer, at billederne ikke bliver større end deres container */
+    height: 55%;
+    margin: 90px auto;
+    display: block;
+}
+
+.tilbageKnap{
+    width: 10%;
+    height: 40%;
+    position: relative;
+    z-index: 2;
+    font-size: 35px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-right: auto;
+    margin-left: auto;
+    display: block;
+    margin-top: 5%;
+}

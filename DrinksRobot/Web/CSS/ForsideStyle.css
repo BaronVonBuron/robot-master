@@ -1,0 +1,42 @@
+.Logo {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    grid-row: 1;
+    z-index: 2;
+    position: relative;
+    padding-top: 50px;
+    margin-bottom: 50px;
+}
+
+.Knapper {
+    display: flex;
+    justify-content: center; /* Centrerer knapperne horisontalt */
+    align-items: stretch; /* Gør alle knapper lige høje */
+    gap: 60px; /* Afstand mellem knapper */
+    width: 60%; /* Sikrer, at de ikke bliver for brede */
+    margin: auto; /* Centrerer containeren */
+    position: relative;
+    z-index: 2;
+}
+
+.ForsideKnap {
+    flex: 1; /* Sikrer, at begge knapper har samme bredde */
+    display: flex;
+    align-self: end;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Sikrer ens bredde */
+    min-height: 50vh;
+    max-width: 800px; /* Gør dem ikke for store */
+    font-size: 50px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.KnapBillede {
+    max-width: 100%;
+    height: auto;
+}
+

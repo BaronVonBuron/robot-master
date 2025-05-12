@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<!-- Kør RobotKommando.py inden -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cyberpunk Drink Robot</title>
+  <link rel="stylesheet" href="../CSS/VaelgDrinksStyle.css">
+  <link rel="stylesheet" href="../CSS/ButtonStyle.css">
+  <link rel="stylesheet" href="../CSS/MainStyle.css">
+</head>
+<body>
+
+
+<div class="bg">
+  <div class="overlay">
+    <div class="Header">
+      <h1>Vælg drink</h1>
+    </div>
+    <div class="ButtonContainer">
+      <div class="arrowContainer">
+        <button class="Arrows" onclick="previousDrinks()">
+        <img src="../Images/leftArrow.png">
+      </button>
+      </div>
+
+      <div class="DrinksContainer" id="drinkList">
+        <!-- Drinks tilføjes dynamisk -->
+      </div>
+      <div class="arrowContainer">
+        <button class="Arrows" onclick="nextDrinks()">
+        <img src="../Images/rightArrow.png">
+      </button>
+      </div>
+    </div>
+    <button class="glow-button-orange tilbageKnap" onclick="window.location.href='index.html'">Tilbage</button>
+  </div>
+</div>
+
+<script>
+  const drinks = [
+    {
+        name: "brandbil",
+        image: "../Images/filur.png",
+        ingredients: ["2 cl. CUBA Apricot", "8 cl. Appelsinjuice", "4 cl. Rød sodavand"]
+    },
+    {
+        name: "gin_hass",
+        image: "../Images/pagnebrus.png",
+        ingredients: ["2 cl. CUBA Caramel", "1 cl. BARMIX Lime Sirup", "Grøn sodavand"]
+    },
+    {
+        name: "rom_og_cola",
+        image: "../Images/uhlala.png",
+        ingredients: ["2 cl. CUBA Strawberry", "1 cl. BARMIX Lime Sirup", "Sprite"]
+    },
+    {
+        name: "solstang",
+        image: "../Images/solstang.png",
+        ingredients: ["2 cl. CUBA Strawberry", "BARMIX Lime Sirup", "BARMIX Grenadine Sirup", "Lemon sodavand"]
+    },
+    {
+        name: "Isbjørn",
+        image: "../Images/isbjoern.png",
+        ingredients: ["2 cl. CUBA Orange", "Sprite"]
+    },
+    {
+        name: "Ananas Split",
+        image: "../Images/ananasSplit.png",
+        ingredients: ["2 cl. CUBA Pineapple", "Cola", "Lime"]
+    },
+    {
+        name: "Kæmpe Læske",
+        image: "../Images/kaempeLaeske.png",
+        ingredients: ["2 cl. CUBA Dry Lemon", "BARMIX Lime Sirup", "Sprite"]
+    },
+    {
+        name: "New York",
+        image: "../Images/NewYork.png",
+        ingredients: ["2 cl. CUBA Dry Lemon", "8 cl. Tonic", "Friskpresset citronsaft"]
+    },
+    {
+        name: "Must Have",
+        image: "../Images/mustHave.png",
+        ingredients: ["2 cl. CUBA Mango", "1 cl. Solbærsirup", "8 cl. Ginger beer"]
+    },
+    {
+        name: "Twister",
+        image: "../Images/twister.png",
+        ingredients: ["2 cl. CUBA Pineapple", "2 cl. CUBA Strawberry", "Lemon sodavand"]
+    }
+];
+
+
+  let startIndex = 0;
+  const drinksPerPage = 5;
+  const drinkList = document.getElementById("drinkList");
+
+  function getDrinkColor(index) {
+    const orange = [0, 4, 5, 9];
+    const green = [1, 3, 6, 8];
+    const yellow = [2, 7];
+
+    if (orange.includes(index)) return "glow-button-orange";
+    if (green.includes(index)) return "glow-button-green";
+    if (yellow.includes(index)) return "glow-button-yellow";
+    return "";
+  }
+
+  function updateDrinkDisplay() {
+    drinkList.innerHTML = "";
+    for (let i = 0; i < drinksPerPage; i++) {
+      let drinkIndex = (startIndex + i) % drinks.length;
+      const btn = document.createElement("button");
+      btn.className = `${getDrinkColor(drinkIndex)} DrinksKnapper`;
+      btn.innerHTML = `<h3>${drinks[drinkIndex].name}</h3><img src="${drinks[drinkIndex].image}" alt="${drinks[drinkIndex].name}">`;
+      btn.onclick = () => sendDrinkInfo(drinks[drinkIndex].name, drinks[drinkIndex].image, drinks[drinkIndex].ingredients);
+      drinkList.appendChild(btn);
+    }
+  }
+
+  function nextDrinks() {
+    startIndex = (startIndex + drinksPerPage) % drinks.length;
+    updateDrinkDisplay();
+  }
+
+  function previousDrinks() {
+    startIndex = (startIndex - drinksPerPage + drinks.length) % drinks.length;
+    updateDrinkDisplay();
+  }
+
+  function sendDrinkInfo(drinkName, drinkImage, drinkIngredients) {
+  sessionStorage.setItem("selectedDrinkName", drinkName);
+  sessionStorage.setItem("selectedDrinkImage", drinkImage);
+  sessionStorage.setItem("selectedDrinkIngredients", JSON.stringify(drinkIngredients));
+  window.location.href = "valgtDrink.html"; // Gå til den nye side
+}
+
+
+  updateDrinkDisplay();
+</script>
+
+</body>
+</html>

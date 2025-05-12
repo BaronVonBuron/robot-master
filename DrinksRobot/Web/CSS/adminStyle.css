@@ -1,0 +1,83 @@
+body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .button-row, .control-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .table-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .scrollable-table {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 250px;
+        }
+
+        th, td {
+            border: 1px solid #aaa;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            position: sticky;
+            top: 0;
+        }
+
+#bottleList li,
+#drinkList li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#bottleList li:hover,
+#drinkList li:hover {
+    background-color: #f0f0f0;
+}
+
+#bottleList li.selected,
+#drinkList li.selected {
+    background-color: #bde5ff
+}
+
+
+#ingredientsList li {
+    padding: 5px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+#ingredientsList li:hover {
+    background-color: #f0f0f0;
+}
+
+#ingredientsList li.selected {
+    background-color: #cce5ff;
+}

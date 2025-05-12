@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Valgt Drink</title>
+  <link rel="stylesheet" href="../CSS/MainStyle.css">
+    <link rel="stylesheet" href="../CSS/ButtonStyle.css">
+    <link rel="stylesheet" href="../CSS/ValgDrinkStyle.css">
+</head>
+<body>
+<div class="bg">
+    <div class="overlay">
+      <div class="container">
+        <h2 id="drinkName"></h2>
+        <img class="DrinkIMG" id="drinkImage" src="" alt="">
+        <div class="ListContainer">
+            <ul id="ingredientsList"></ul>
+        </div>
+        </div>
+    <div class="buttonDiv">
+        <button class="glow-button-orange buttons" onclick="window.location.href='VaelgDrinks.html'">Tilbage</button>
+        <button class="glow-button-green buttons" onclick="startProgress()">Start</button>
+    </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const drinkName = sessionStorage.getItem("selectedDrinkName") || "Ukendt Drink";
+    const drinkImage = sessionStorage.getItem("selectedDrinkImage") || "../Images/default.png";
+    const ingredients = JSON.parse(sessionStorage.getItem("selectedDrinkIngredients")) || [];
+
+    document.getElementById("drinkName").innerText = drinkName;
+    document.getElementById("drinkImage").src = drinkImage;
+    document.getElementById("drinkImage").alt = drinkName;
+
+    const ingredientsList = document.getElementById("ingredientsList");
+    ingredients.forEach(ingredient => {
+        const li = document.createElement("li");
+        li.innerText = ingredient;
+        ingredientsList.appendChild(li);
+    });
+});
+
+function startProgress() {
+    const drinkName = sessionStorage.getItem("selectedDrinkName") || sessionStorage.getItem("drinkName") || "Ukendt Drink";
+    const drinkImage = sessionStorage.getItem("selectedDrinkImage") || "../Images/default.png";
+    const ingredients = sessionStorage.getItem("selectedDrinkIngredients") || sessionStorage.getItem("ingredients") || "[]";
+
+    sessionStorage.setItem("progressDrinkName", drinkName);
+    sessionStorage.setItem("progressDrinkImage", drinkImage);
+    sessionStorage.setItem("progressDrinkIngredients", ingredients);
+
+    window.location.href = "progress.html";
+}
+</script>
+</body>
+</html>

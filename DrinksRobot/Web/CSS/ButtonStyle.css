@@ -1,0 +1,59 @@
+.glow-button-orange {
+    background-color: #E9A900;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(233, 169, 0, 0.7), 0 0 30px rgba(233, 169, 0, 0.5), 0 0 45px rgba(233, 169, 0, 0.3);
+    transition: all 0.3s ease-in-out;
+}
+
+.glow-button-orange:hover {
+    box-shadow: 0 0 25px rgba(233, 169, 0, 1), 0 0 50px rgba(233, 169, 0, 0.8), 0 0 75px rgba(233, 169, 0, 0.6);
+    transform: scale(1.05);
+}
+
+.glow-button-orange:active {
+    box-shadow: 0 0 10px rgba(233, 169, 0, 0.9), 0 0 20px rgba(233, 169, 0, 0.7), 0 0 30px rgba(233, 169, 0, 0.5);
+    transform: scale(0.98);
+}
+
+.glow-button-green {
+    background-color: #71ED08;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(113, 237, 8, 0.7), 0 0 30px rgba(113, 237, 8, 0.5), 0 0 45px rgba(113, 237, 8, 0.3);
+    transition: all 0.3s ease-in-out;
+}
+
+.glow-button-green:hover {
+    box-shadow: 0 0 25px rgba(113, 237, 8, 1), 0 0 50px rgba(113, 237, 8, 0.8), 0 0 75px rgba(113, 237, 8, 0.6);
+    transform: scale(1.05);
+}
+
+.glow-button-green:active {
+    box-shadow: 0 0 10px rgba(113, 237, 8, 0.9), 0 0 20px rgba(113, 237, 8, 0.7), 0 0 30px rgba(113, 237, 8, 0.5);
+    transform: scale(0.98);
+}
+
+.glow-button-yellow {
+    background-color: #FFF934;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(255, 249, 52, 0.7), 0 0 30px rgba(255, 249, 52, 0.5), 0 0 45px rgba(255, 249, 52, 0.3);
+    transition: all 0.3s ease-in-out;
+}
+
+.glow-button-yellow:hover {
+    box-shadow: 0 0 25px rgba(255, 249, 52, 1), 0 0 50px rgba(255, 249, 52, 0.8), 0 0 75px rgba(255, 249, 52, 0.6);
+    transform: scale(1.05);
+}
+
+.glow-button-yellow:active {
+    box-shadow: 0 0 10px rgba(255, 249, 52, 0.9), 0 0 20px rgba(255, 249, 52, 0.7), 0 0 30px rgba(255, 249, 52, 0.5);
+    transform: scale(0.98);
+}

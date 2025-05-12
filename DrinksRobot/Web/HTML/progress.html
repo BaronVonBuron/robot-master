@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Valgt Drink</title>
+  <link rel="stylesheet" href="../CSS/MainStyle.css">
+    <link rel="stylesheet" href="../CSS/ButtonStyle.css">
+    <link rel="stylesheet" href="../CSS/progress.css">
+</head>
+<body>
+<div class="bg">
+    <div class="overlay">
+      <div class="container">
+        <h2 id="drinkTitle"></h2>
+        <img class="DrinkIMG" id="drinkImage" src="" width="100">
+      <div class="ListContainer">
+        <ul id="ingredientList"></ul>
+      </div>
+
+        </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const drinkName = sessionStorage.getItem("progressDrinkName") || sessionStorage.getItem("drinkName") || "Ukendt Drink";
+    const drinkImage = sessionStorage.getItem("progressDrinkImage") || "../Images/mystery.png"; // Standardbillede for mix selv
+    const ingredients = JSON.parse(sessionStorage.getItem("progressDrinkIngredients") || sessionStorage.getItem("ingredients") || "[]");
+
+    document.getElementById("drinkTitle").innerText = drinkName;
+    document.getElementById("drinkImage").src = drinkImage;
+    document.getElementById("drinkImage").alt = drinkName;
+
+    const ul = document.getElementById("ingredientList");
+    ingredients.forEach(ingredient => {
+        if (ingredient === "Ingen") return; // Undgå at vise "Ingen"
+        const li = document.createElement("li");
+        li.innerText = ingredient;
+        ul.appendChild(li);
+    });
+
+    //sendDrink(drinkName);
+});
+
+function sendDrink(drinkName) {
+    fetch('http://localhost:5001/run_multiple_drinks', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({drink: drinkName})
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log("Response:", data);
+    })
+    .catch(error => {
+        console.error("Fejl:", error);
+    });
+}
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Forside</title>
+    <link rel="stylesheet" href="../CSS/ForsideStyle.css">
+    <link rel="stylesheet" href="../CSS/ButtonStyle.css">
+    <link rel="stylesheet" href="../CSS/MainStyle.css">
+    <script>
+        function adgangskodeCheck() {
+            const kode = prompt("Indtast adgangskode:");
+            if (kode === "1234") {
+                window.location.href = "admin.html";
+            } else {
+                alert("Forkert adgangskode!");
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="bg">
+        <div class="overlay">
+            <img class="Logo" src="../Images/logo.png">
+        </div>
+        <div class="Knapper">
+            <button class="ForsideKnap glow-button-orange" onclick="window.location.href='MixSelv.html'">
+                <img class="KnapBillede" src="../Images/mixSelv.png">
+                <p class="KnapTekst">Mix selv</p>
+            </button>
+            <button class="ForsideKnap glow-button-green" onclick="window.location.href='VaelgDrinks.html'">
+                <img class="KnapBillede" src="../Images/vaelgDrinks.png">
+                <p class="KnapTekst">Vælg drink</p>
+            </button>
+        </div>
+
+    </div>
+<button  onclick="adgangskodeCheck()">
+
+                <p class="KnapTekst">Admin</p>
+            </button>
+</body>
+</html>

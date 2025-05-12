@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Forside</title>
+    <link rel="stylesheet" href="../CSS/MixSelvStyle.css">
+    <link rel="stylesheet" href="../CSS/ButtonStyle.css">
+    <link rel="stylesheet" href="../CSS/MainStyle.css">
+</head>
+<body>
+    <div class="bg">
+        <div class="overlay">
+            <div class="NameContainer">
+                <label>STEP 1: Giv din drink et navn</label>
+                <input class="NameInput" type="text" id="drinkName" placeholder="Drink navn">
+            </div>
+            <div class="grid-container">
+                <!-- STEP 2 -->
+                <div class="SteepContainer">
+                    <label>STEP 2:<br>Vælg 2 cl. alkohol</label>
+                    <img class="Silhouette" id="step2-img" src="../Images/Silhouette.png">
+                    <button class="VælgButton" onclick="openModal('alcohol', 'step2-img')">Vælg</button>
+                </div>
+                <!-- STEP 3 -->
+                <div class="SteepContainer">
+                    <label>STEP 3:<br>Vælg 1 cl. sirup</label>
+                    <img class="Silhouette" id="step3-img" src="../Images/Silhouette.png">
+                    <button class="VælgButton" onclick="openModal('sirup', 'step3-img')">Vælg</button>
+                </div>
+                <!-- STEP 4 -->
+                <div class="SteepContainer">
+                    <label>STEP 4:<br>Vælg juice/sodavand</label>
+                    <img class="Silhouette" id="step4-img" src="../Images/Silhouette.png">
+                    <button class="VælgButton" onclick="openModal('juice', 'step4-img')">Vælg</button>
+                </div>
+                <!-- STEP 5 -->
+                <div class="SteepContainer">
+                    <label>STEP 5:<br>Vælg juice/sodavand</label>
+                    <img class="Silhouette" id="step5-img" src="../Images/Silhouette.png">
+                    <button class="VælgButton" onclick="openModal('juice', 'step5-img', true)">Vælg</button>
+                </div>
+            </div>
+            <div class="buttonContainer">
+                <button class="glow-button-orange buttons" onclick="window.location.href='index.html'">Tilbage</button>
+                <button class="glow-button-green buttons" onclick="startMixing()">Start</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Vinduet -->
+    <div id="selectionModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Vælg en ingrediens</h2>
+            <div class="modal-buttons" id="modalOptions">
+                <!-- Knapper til ingredienser tilføjes her dynamisk -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+let ingredients = {
+    alcohol: [],
+    juice_sodavand: [],
+    sirup: []
+};
+
+let ingredientsList = {};
+let currentStepImg = "";
+
+window.onload = async function () {
+    try {
+        const response = await fetch('http://localhost:5001/api/bottles');
+        const data = await response.json();
+
+        // Log the response to inspect the structure
+        console.log("Bottles data:", data);
+
+        // Ensure the response is an array of bottles
+        if (Array.isArray(data)) {
+            data.forEach(bottle => {
+                console.log("Processing bottle:", bottle);
+
+                // Map the correct values from the tuple
+                const img = bottle.bottle_image;
+                const name = bottle.bottle_name; // 'vodka' (name)
+                const type = bottle.bottle_type; // 'alkohol' (type)
+
+                // Check if the type is a string and convert it to lowercase
+                const typeLowerCase = type ? type.toLowerCase() : null;
+
+                // Check for each type and add to the appropriate category
+                if (typeLowerCase === "alkohol") ingredients.alcohol.push({ img, name, type, id: bottle.bottle_id });
+                else if (typeLowerCase === "juice/sodavand") ingredients.juice_sodavand.push({ img, name, type, id: bottle.bottle_id });
+                else if (typeLowerCase === "sirup") ingredients.sirup.push({ img, name, type, id: bottle.bottle_id });
+            });
+        } else {
+            console.error("Expected an array of bottles, but got:", data);
+        }
+    } catch (error) {
+        console.error("Failed to fetch bottles:", error);
+    }
+};
+
+function openModal(type, imgId, allowNone = false) {
+    const modal = document.getElementById("selectionModal");
+    const modalOptions = document.getElementById("modalOptions");
+    const modalTitle = document.getElementById("modalTitle");
+
+    modalOptions.innerHTML = "";
+    modalTitle.innerText = "Vælg en ingrediens";
+    currentStepImg = imgId;
+
+    ingredients[type].forEach(ingredient => {
+        const btn = document.createElement("button");
+        btn.innerHTML = `<img src="${ingredient.image}" alt="${ingredient.name}" width="50"><br>${ingredient.name}`;
+        btn.onclick = () => selectIngredient(imgId, ingredient.image, ingredient.name, ingredient.id);
+        modalOptions.appendChild(btn);
+    });
+
+    if (allowNone) {
+        const noneBtn = document.createElement("button");
+        noneBtn.innerText = "Ingen";
+        noneBtn.onclick = () => selectIngredient(imgId, "../Images/Silhouette.png", "Ingen", null);
+        modalOptions.appendChild(noneBtn);
+    }
+
+    modal.style.display = "flex";
+}
+
+function selectIngredient(stepId, imagePath, name, id) {
+    ingredientsList[stepId] = { id, name, image: imagePath };
+    document.getElementById(stepId).src = imagePath;
+    closeModal();
+}
+
+function closeModal() {
+    document.getElementById("selectionModal").style.display = "none";
+}
+
+async function startMixing() {
+    const selectedIds = Object.values(ingredientsList)
+        .filter(i => i.id !== null)
+        .map(i => i.id);
+
+    try {
+        const response = await fetch('http://localhost:5001/api/createdrink', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ bottles: selectedIds })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            window.location.href = "progress.html";
+        } else {
+            console.error("Drink creation failed:", result.error);
+            alert("Fejl under drinkoprettelse.");
+        }
+    } catch (error) {
+        console.error("Error contacting backend:", error);
+    }
+}
+</script>
+
+
+    </script>
+</body>
+</html>
