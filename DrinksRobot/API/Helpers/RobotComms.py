@@ -29,7 +29,7 @@ class RobotComms:
 
     def play_program(self):
         try:
-            time.sleep(0.5)  # Give robot a bit of time between commands
+            time.sleep(2)  # Give robot a bit of time between commands
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.settimeout(10)  # Increase timeout
             s.connect((self.robotIP, self.DASHBOARD_PORT))

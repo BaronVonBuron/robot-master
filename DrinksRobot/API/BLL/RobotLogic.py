@@ -11,40 +11,46 @@ class RobotLogic:
     def __init__(self, comms, script_queue):
         self.comms = comms
         self.script_queue = script_queue
-        self.program_map = []
+        self.program_map = {}  # maps ingredient name → [script1, script2, script3]
 
     def run_program(self, bottle_ids):
         bottles = bottle_context.get_Bottles_with_id(bottle_ids)
+        RobotState.idle_counter = 0
+        RobotState.pause_script_active = False
+        RobotState.progress_done = 0
+        RobotState.progress_total = len(bottles) * 3
 
         for bottle in bottles:
+            scripts = []
+
             for script in [bottle.urscript_get, bottle.urscript_pour, bottle.urscript_back]:
                 if script:
-                    self.program_map.append(script)
-                    self.queue_program(script)
+                    scripts.append(script)
 
-            RobotState.idle_counter = 0
-            RobotState.pause_script_active = False
-            print("Idle counter reset efter valg!")
-        else:
-            print(f"Ukendt drink navn: ")
+            if scripts:
+                self.program_map[bottle.title] = scripts
+                self.queue_scripts_for_bottle(scripts)
+
+        print("✅ Alle flasker queued!")
+
+    def queue_scripts_for_bottle(self, script_list):
+        for script in script_list:
+            self.queue_program(script)
 
     def mix_drink(self, ingredients):
         RobotState.progress_done = 0
-        RobotState.progress_total = len(ingredients) * 2
+        RobotState.progress_total = len(ingredients) * 3
+
         for ingredient in ingredients:
-            mapped_name = self.name_mapping.get(ingredient, None)
-            if mapped_name and mapped_name in self.program_map:
-                program_name = self.program_map[mapped_name]
-                self.queue_program(program_name)
+            if ingredient in self.program_map:
+                scripts = self.program_map[ingredient]
+                self.queue_scripts_for_bottle(scripts)
             else:
-                print(f"Ukendt ingrediens: {ingredient}")
+                print(f"⚠️ Ukendt ingrediens: {ingredient}")
 
-    def queue_program(self, program_name):
-        # Hver program består af load + play kommandoer
-        load_command = f'load {program_name}\n'
+    def queue_program(self, program_path):
+        load_command = f'load {program_path}\n'
         play_command = 'play\n'
-
-        # Tilføj load og play til køen
         self.script_queue.add_script(load_command)
         self.script_queue.add_script(play_command)
 

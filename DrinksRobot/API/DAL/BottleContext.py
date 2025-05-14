@@ -60,7 +60,7 @@ class BottleContext:
 
         for bottle_id in bottle_ids:
             cursor.execute("""
-                SELECT BottleId, URScriptGet, URScriptPour, URScriptBack
+                SELECT Title, URScriptGet, URScriptPour, URScriptBack
                 FROM BottleTable
                 WHERE BottleId = ?
             """, (bottle_id,))
@@ -72,8 +72,8 @@ class BottleContext:
         return bottle_list
 
 class MinimalBottle:
-    def __init__(self, bottle_id, urscript_get, urscript_pour, urscript_back):
-        self.bottle_id = bottle_id
+    def __init__(self, title, urscript_get, urscript_pour, urscript_back):
+        self.title = title
         self.urscript_get = urscript_get
         self.urscript_pour = urscript_pour
         self.urscript_back = urscript_back
