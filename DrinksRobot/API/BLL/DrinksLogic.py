@@ -16,4 +16,8 @@ class DrinkLogic:
     def add_drink_count(self, position):
         drink_context.update_drink_use_count(position)
 
+    def get_drink_by_id(self, drink_id):
+        drink = drink_context.get_drink_by_id(drink_id)
+        return drink
+
 

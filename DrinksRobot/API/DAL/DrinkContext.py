@@ -50,25 +50,35 @@ class DrinkContext:
         finally:
             conn.close()
 
-def update_drink_use_count(self, drink_id):
+    def update_drink_use_count(self, drink_id):
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE DrinkTable
+                SET UseCount = UseCount + 1
+                WHERE DrinkId = ?
+            """, (drink_id,))
+            conn.commit()
+            conn.close()
+            print(f"UseCount for drink {drink_id} er nu opdateret.")
+
+    def get_all_drinks(self):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM DrinkTable")
+        drinks = cursor.fetchall()
+        conn.close()
+        return drinks
+
+    def get_drink_by_id(self, drink_id):
         conn = self.get_connection()
         cursor = conn.cursor()
         cursor.execute("""
-            UPDATE DrinkTable
-            SET UseCount = UseCount + 1
-            WHERE DrinkId = ?
+            SELECT * FROM DrinkTable WHERE DrinkId = ?
         """, (drink_id,))
-        conn.commit()
+        result = cursor.fetchone()
         conn.close()
-        print(f"UseCount for drink {drink_id} er nu opdateret.")
-
-def get_all_drinks(self):
-    conn = self.get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM DrinkTable")
-    drinks = cursor.fetchall()
-    conn.close()
-    return drinks
+        return result
 
 
 

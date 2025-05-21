@@ -31,13 +31,13 @@
                 <div class="SteepContainer">
                     <label>STEP 4:<br>Vælg juice/sodavand</label>
                     <img class="Silhouette" id="step4-img" src="../Images/Silhouette.png">
-                    <button class="VælgButton" onclick="openModal('juice', 'step4-img')">Vælg</button>
+                    <button class="VælgButton" onclick="openModal('juice_sodavand', 'step4-img')">Vælg</button>
                 </div>
                 <!-- STEP 5 -->
                 <div class="SteepContainer">
                     <label>STEP 5:<br>Vælg juice/sodavand</label>
                     <img class="Silhouette" id="step5-img" src="../Images/Silhouette.png">
-                    <button class="VælgButton" onclick="openModal('juice', 'step5-img', true)">Vælg</button>
+                    <button class="VælgButton" onclick="openModal('juice_sodavand', 'step5-img', true)">Vælg</button>
                 </div>
             </div>
             <div class="buttonContainer">
@@ -79,21 +79,24 @@ window.onload = async function () {
         // Ensure the response is an array of bottles
         if (Array.isArray(data)) {
             data.forEach(bottle => {
-                console.log("Processing bottle:", bottle);
+            console.log("Processing bottle:", bottle);
 
-                // Map the correct values from the tuple
-                const img = bottle.bottle_image;
-                const name = bottle.bottle_name; // 'vodka' (name)
-                const type = bottle.bottle_type; // 'alkohol' (type)
+            const image = bottle.bottle_image;
+            const name = bottle.bottle_name;
+            const type = bottle.bottle_type;
 
-                // Check if the type is a string and convert it to lowercase
-                const typeLowerCase = type ? type.toLowerCase() : null;
+            const typeLowerCase = type ? type.toLowerCase() : null;
 
-                // Check for each type and add to the appropriate category
-                if (typeLowerCase === "alkohol") ingredients.alcohol.push({ img, name, type, id: bottle.bottle_id });
-                else if (typeLowerCase === "juice/sodavand") ingredients.juice_sodavand.push({ img, name, type, id: bottle.bottle_id });
-                else if (typeLowerCase === "sirup") ingredients.sirup.push({ img, name, type, id: bottle.bottle_id });
-            });
+            const ingredientObj = { image, name, type, id: bottle.bottle_id };
+
+            if (typeLowerCase === "alkohol") {
+                ingredients.alcohol.push(ingredientObj);
+            } else if (typeLowerCase === "juice_sodavand") {
+                ingredients.juice_sodavand.push(ingredientObj);
+            } else if (typeLowerCase === "sirup") {
+                ingredients.sirup.push(ingredientObj);
+            }
+        });
         } else {
             console.error("Expected an array of bottles, but got:", data);
         }
@@ -149,6 +152,7 @@ async function startMixing() {
             headers: {
                 'Content-Type': 'application/json'
             },
+
             body: JSON.stringify({ bottles: selectedIds })
         });
 

@@ -32,4 +32,10 @@ def create_drink():
     drink_logic.create_drink_with_content(drink_name, img, bottles)
     return jsonify({"status": "success"}), 200
 
+@DrinksController.route('/drinks', methods=['GET'])
+def get_drink_by_id():
+    drink_id = request.form.get('drink_id')
+    drink = drink_logic.get_drink_by_id(drink_id)
+    return drink
+
 
