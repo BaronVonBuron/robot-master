@@ -66,6 +66,46 @@ let ingredients = {
 };
 
 let ingredientsList = {};
+const ingredients = {
+            alcohol: [
+                { name: "CUBA Vodka", image: "../Images/vodka.png" },
+                { name: "CUBA Apricot", image: "../Images/apricot.png" },
+                { name: "CUBA Caramel", image: "../Images/caramel.png" },
+                { name: "CUBA Strawberry", image: "../Images/strawberry.png" },
+                { name: "CUBA Orange", image: "../Images/orange.png" },
+                { name: "CUBA Dry Lemon", image: "../Images/drylemon.png" },
+                { name: "CUBA Kurant", image: "../Images/kurant.png" },
+                { name: "CUBA Passion", image: "../Images/passion.png" },
+                { name: "CUBA Raspberry", image: "../Images/raspberry.png" },
+                { name: "CUBA Pineapple", image: "../Images/pineapple.png" },
+                { name: "CUBA Mango", image: "../Images/mango.png" },
+                { name: "CUBA Watermelon", image: "../Images/watermelon.png" }
+            ],
+            sirup: [
+                { name: "BARMIX Lime Sirup", image: "../Images/lime.png" },
+                { name: "BARMIX Grenadine Sirup", image: "../Images/grenadine.png" },
+                { name: "BARMIX Curacao Sirup", image: "../Images/curacao.png" },
+                { name: "BARMIX Blackberry Sirup", image: "../Images/blackberry.png" },
+                { name: "BARMIX Sugar Cane Sirup", image: "../Images/sugarcane.png" },
+                { name: "BARMIX Strawberry Sirup", image: "../Images/strawberryS.png" },
+                { name: "BARMIX Rhubarb Sirup", image: "../Images/rhubarb.png" },
+                { name: "BARMIX Mango Sirup", image: "../Images/mangoS.png" }
+            ],
+            juice: [
+                { name: "Appelsinjuice", image: "../Images/appelsinjuice.png" },
+                { name: "Ananasjuice", image: "../Images/ananasjuice.png" },
+                { name: "Æblejuice", image: "../Images/aeblejuice.png" },
+                { name: "Mangojuice", image: "../Images/mangojuice.png" },
+                { name: "Ingefærjuice", image: "../Images/ingefaerjuice.png" },
+                { name: "Cola", image: "../Images/cola.png" },
+                { name: "Sprite", image: "../Images/sprite.png" },
+                { name: "Hindbærbrus", image: "../Images/hindbaerbrus.png" },
+                { name: "Grøn sport", image: "../Images/groensport.png" },
+                { name: "Fanta Appelsin", image: "../Images/fantaA.png" },
+                { name: "Fanta Lemon", image: "../Images/fantaL.png" },
+                { name: "Fanta Exotic", image: "../Images/fantaE.png" }
+            ]
+        };
 let currentStepImg = "";
 
 window.onload = async function () {
@@ -159,7 +199,7 @@ async function startMixing() {
         const result = await response.json();
 
         if (response.ok) {
-            window.location.href = "progress.html";
+            window.location.href = "progressMix.html";
         } else {
             console.error("Drink creation failed:", result.error);
             alert("Fejl under drinkoprettelse.");
