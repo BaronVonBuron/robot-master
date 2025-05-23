@@ -23,7 +23,7 @@ CORS(app)  # Tillad requests fra browser
 robot_connection = RobotComms("192.168.0.101")
 script_queue = ScriptQueue(robot_connection)
 robot_logic = RobotLogic(robot_connection, script_queue)
-idle_checker = PauseFisk(robot_connection)
+idle_checker = PauseFisk(robot_connection, script_queue)
 idle_thread = threading.Thread(target=idle_checker.monitor_idle, daemon=True)
 idle_thread.start()
 
