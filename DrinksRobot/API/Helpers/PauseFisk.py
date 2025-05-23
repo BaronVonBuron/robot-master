@@ -1,6 +1,6 @@
 import time
 import random
-from DrinksRobot.API.Helpers import RobotState
+from DrinksRobot.API.Helpers.RobotState import RobotState
 
 class PauseFisk:
     def __init__(self, comms):
