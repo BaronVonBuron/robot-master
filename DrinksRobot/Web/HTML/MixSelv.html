@@ -146,27 +146,23 @@ async function startMixing() {
         .filter(i => i.id !== null)
         .map(i => i.id);
 
+
+    window.location.href = "progressMix.html";
+
+
     try {
-        const response = await fetch('http://localhost:5001/api/createdrink', {
+        await fetch('http://localhost:5001/api/createdrink', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-
             body: JSON.stringify({ bottles: selectedIds })
         });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            window.location.href = "progress.html";
-        } else {
-            console.error("Drink creation failed:", result.error);
-            alert("Fejl under drinkoprettelse.");
-        }
     } catch (error) {
-        console.error("Error contacting backend:", error);
+        console.error("Fejl ved kontakt til backend:", error);
+
     }
+
 }
 </script>
 

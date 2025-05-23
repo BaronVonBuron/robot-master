@@ -3,7 +3,11 @@ from collections import namedtuple
 Bottle = namedtuple('Bottle',
                         ['position', 'urscript_get', 'urscript_pour', 'urscript_back', 'img', 'title', 'bottle_type'])
 class BottleContext:
-    DB_PATH = r"C:\Users\ko2an\PycharmProjects\robotProgram_protoype-master\DrinksRobot\API\DAL\Database\drinks.db"
+
+    # anders path til database (dette skal laves om senere)
+    # DB_PATH = r"C:\Users\ko2an\PycharmProjects\robotProgram_protoype-master\DrinksRobot\API\DAL\Database\drinks.db"
+    # jacob path til database
+    DB_PATH = r"C:\Users\damer\Documents\GitHub\robotProgram_protoype-master\DrinksRobot\API\DAL\Database\drinks.db"
 
     def get_connection(self):
         conn = sqlite3.connect(self.DB_PATH)
