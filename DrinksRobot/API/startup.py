@@ -64,6 +64,7 @@ def robot_status():
 
 @app.route('/robot_progress', methods=['GET'])
 def robot_progress():
+    print(f"[Progress API] Done: {RobotState.progress_done}, Total: {RobotState.progress_total}")
     return {
         "done": RobotState.progress_done,
         "total": RobotState.progress_total
