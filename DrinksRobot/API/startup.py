@@ -1,10 +1,13 @@
-from flask import Flask, request,jsonify
+
+from flask import Flask, request, jsonify
 from flask_cors import CORS
-from DrinksRobot.API.Helpers.RobotComms import RobotComms
+
 from DrinksRobot.API.BLL.RobotLogic import RobotLogic
 from DrinksRobot.API.Helpers.ScriptQueue import ScriptQueue
-from DrinksRobot.API.Helpers.PauseFisk import PauseFisk
+
 from DrinksRobot.API.Helpers.RobotState import RobotState
+from DrinksRobot.API.Helpers.PauseFisk import PauseFisk
+from DrinksRobot.API.Helpers.RobotComms import RobotComms
 
 import sys
 import os
@@ -22,10 +25,9 @@ CORS(app)  # Tillad requests fra browser
 robot_connection = RobotComms("192.168.0.101")
 script_queue = ScriptQueue(robot_connection)
 robot_logic = RobotLogic(robot_connection, script_queue)
-idle_checker = PauseFisk(robot_connection)
+idle_checker = PauseFisk(robot_connection, script_queue)
 idle_thread = threading.Thread(target=idle_checker.monitor_idle, daemon=True)
 idle_thread.start()
-
 
 app.register_blueprint(BottleController, url_prefix='/api')
 app.register_blueprint(DrinksController, url_prefix='/api')
@@ -40,13 +42,15 @@ def run_drink():
     if 'ingredients' in data:
         ingredients = data['ingredients']
         print(f"Mix Selv valgt: {ingredients}")
-        RobotLogic.mix_drink(ingredients)
+
+        robot_logic.mix_drink(ingredients)
         return "Mix Selv drink startet!", 200
 
     elif 'drink' in data:
         drink = data['drink']
         print(f"Færdig drink valgt: {drink}")
-        RobotLogic.run_program(drink)
+
+        robot_logic.run_program(drink)
         return "Færdig drink startet!", 200
 
     else:
@@ -64,6 +68,7 @@ def robot_status():
 
 @app.route('/robot_progress', methods=['GET'])
 def robot_progress():
+    print(f"[Progress API] Done: {RobotState.progress_done}, Total: {RobotState.progress_total}")
     return {
         "done": RobotState.progress_done,
         "total": RobotState.progress_total

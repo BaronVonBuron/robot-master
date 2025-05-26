@@ -26,7 +26,7 @@
 </div>
 
 <script>
-  const totalScripts = (JSON.parse(sessionStorage.getItem("selectedIngredients") || "[]").length) * 2;
+  const totalScripts = (JSON.parse(sessionStorage.getItem("selectedIngredients") || "[]").length) * 3;
 
   document.addEventListener("DOMContentLoaded", function () {
     const drinkName = sessionStorage.getItem("drinkName") || "Ukendt Drink";
@@ -52,6 +52,7 @@
       .then(res => res.json())
       .then(data => {
         const done = data.done || 0;
+        const total = data.total || 1;
         const percent = Math.min((done / totalScripts) * 100, 100);
         document.getElementById("progressBar").style.width = percent + "%";
 
@@ -67,13 +68,15 @@
       });
   }
 
-  function updateProgramLabel() {
+ function updateProgramLabel() {
   fetch('http://localhost:5001/current_program')
     .then(res => res.json())
     .then(data => {
-      if (data.program) {
+      if (data.program && data.program.trim() !== "") {
         const cleaned = data.program.replace(".urp", "");
         document.getElementById("progressLabel").innerText = "Hælder " + cleaned;
+      } else {
+        document.getElementById("progressLabel").innerText = "Hælder...";
       }
     })
     .catch(err => {
