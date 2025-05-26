@@ -5,7 +5,7 @@
   <title>Mix Selv - Din drink bliver lavet</title>
   <link rel="stylesheet" href="../CSS/MainStyle.css">
   <link rel="stylesheet" href="../CSS/ButtonStyle.css">
-  <link rel="stylesheet" href="../CSS/progress.css">
+  <link rel="stylesheet" href="../CSS/progress2.css">
 </head>
 <body>
 <div class="bg">
@@ -26,7 +26,7 @@
 </div>
 
 <script>
-  const totalScripts = (JSON.parse(sessionStorage.getItem("selectedIngredients") || "[]").length) * 2;
+  const totalScripts = (JSON.parse(sessionStorage.getItem("selectedIngredients") || "[]").length) * 3;
 
   document.addEventListener("DOMContentLoaded", function () {
     const drinkName = sessionStorage.getItem("drinkName") || "Ukendt Drink";
