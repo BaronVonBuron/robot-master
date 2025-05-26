@@ -14,6 +14,14 @@ class RobotLogic:
         self.program_map = {}  # maps ingredient name → [script1, script2, script3]
 
     def run_program(self, bottle_ids):
+
+        if RobotState.pause_script_active:
+            print("Pause-program er i gang. Venter på det afsluttes...")
+            while self.comms.is_program_running_name("pause"):
+                time.sleep(0.5)
+            RobotState.pause_script_active = False
+            print("Pause-program færdig – starter drink.")
+
         bottles = bottle_context.get_Bottles_with_id(bottle_ids)
         RobotState.idle_counter = 0
         RobotState.pause_script_active = False
@@ -40,8 +48,18 @@ class RobotLogic:
             self.queue_program(script)
 
     def mix_drink(self, ingredients):
+
+        if RobotState.pause_script_active:
+            print("Pause-program er i gang. Venter på det afsluttes...")
+            while self.comms.is_program_running_name("pause"):
+                time.sleep(0.5)
+            RobotState.pause_script_active = False
+            print("Pause-program færdig – starter drink.")
+
+        RobotState.idle_counter = 0
+        RobotState.pause_script_active = False
         RobotState.progress_done = 0
-        RobotState.progress_total = len(ingredients) * 2
+        RobotState.progress_total = len(ingredients) * 3
 
         for ingredient in ingredients:
             if ingredient in self.program_map:

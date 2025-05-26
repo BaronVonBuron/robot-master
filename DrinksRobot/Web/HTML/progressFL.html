@@ -18,6 +18,9 @@
       </div>
 
         </div>
+      <div id="progressLabel">Hælder...</div>
+          <div class="progressWrapper">
+            <div id="progressBar"></div>
         </div>
     </div>
 </div>
@@ -58,26 +61,46 @@ function sendDrink(drinkName) {
     });
 }
 
-function pollRobotStatus() {
-    fetch('http://localhost:5001/robot_status')
-        .then(res => res.json())
-        .then(data => {
-            if (!data.running) {
-                console.log("Robot er færdig! Går til forsiden...");
-                window.location.href = "index.html";
-            } else {
-                console.log("Robot stadig i gang...");
-                setTimeout(pollRobotStatus, 3000); // Prøv igen om 3 sekunder
-            }
-        })
-        .catch(err => {
-            console.error("Fejl ved status-tjek:", err);
-            setTimeout(pollRobotStatus, 3000);
-        });
+function pollProgress() {
+    fetch('http://localhost:5001/robot_progress')
+      .then(res => res.json())
+      .then(data => {
+        const done = data.done || 0;
+        const total = data.total || 1;
+        const percent = Math.min((done / total) * 100, 100);
+        document.getElementById("progressBar").style.width = percent + "%";
+
+        if (percent >= 100) {
+          setTimeout(() => window.location.href = "index.html", 1500);
+        } else {
+          setTimeout(pollProgress, 1500);
+        }
+      })
+      .catch(err => {
+        console.error("Fejl ved progress poll:", err);
+        setTimeout(pollProgress, 2000);
+      });
 }
 
-// Start polling efter 2 sekunder
-setTimeout(pollRobotStatus, 2000);
+function updateProgramLabel() {
+  fetch('http://localhost:5001/current_program')
+    .then(res => res.json())
+    .then(data => {
+      if (data.program && data.program.trim() !== "") {
+        const cleaned = data.program.replace(".urp", "");
+        document.getElementById("progressLabel").innerText = "Hælder " + cleaned;
+      } else {
+        document.getElementById("progressLabel").innerText = "Hælder...";
+      }
+    })
+    .catch(err => {
+      console.error("Fejl ved hentning af programnavn:", err);
+    });
+}
+
+// Start polling efter 3 sekunder
+pollProgress();
+setInterval(updateProgramLabel, 3000);
 
 </script>
 
