@@ -39,7 +39,7 @@ class RobotLogic:
 
     def mix_drink(self, ingredients):
         RobotState.progress_done = 0
-        RobotState.progress_total = len(ingredients) * 2
+        RobotState.progress_total = len(ingredients) * 3
 
         for ingredient in ingredients:
             if ingredient in self.program_map:
