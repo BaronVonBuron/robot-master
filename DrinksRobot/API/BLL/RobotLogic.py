@@ -23,6 +23,7 @@ class RobotLogic:
         for bottle in bottles:
             scripts = []
 
+
             for script in [bottle.urscript_get, bottle.urscript_pour, bottle.urscript_back]:
                 if script:
                     scripts.append(script)
@@ -32,6 +33,7 @@ class RobotLogic:
                 self.queue_scripts_for_bottle(scripts)
 
         print("✅ Alle flasker queued!")
+        bottle_context.update_bottle_use_count(bottle.bottle_id)
 
     def queue_scripts_for_bottle(self, script_list):
         for script in script_list:
