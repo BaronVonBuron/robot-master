@@ -9,7 +9,7 @@ class PauseFisk:
         self.comms = comms
 
         self.script_queue = script_queue
-        self.IDLE_LIMIT = 60
+        self.IDLE_LIMIT = 55
         self.pause_programs = ["pause1.urp", "pause2.urp", "pause3.urp"]
 
     def monitor_idle(self):
