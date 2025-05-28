@@ -1,5 +1,6 @@
 import sqlite3
 from collections import namedtuple
+from pathlib import Path
 Bottle = namedtuple('Bottle',
                         ['position', 'urscript_get', 'urscript_pour', 'urscript_back', 'img', 'title', 'bottle_type'])
 class BottleContext:
@@ -7,8 +8,11 @@ class BottleContext:
     # anders path til database (dette skal laves om senere)
     # DB_PATH = r"C:\Users\ko2an\PycharmProjects\robotProgram_protoype-master\DrinksRobot\API\DAL\Database\drinks.db"
     # jacob path til database
-    DB_PATH = r"C:\Users\ko2an\PycharmProjects\robotProgram_protoype-master\DrinksRobot\API\DAL\Database\drinks.db"
-
+    #DB_PATH = r"C:\Users\ko2an\PycharmProjects\robotProgram_protoype-master\DrinksRobot\API\DAL\Database\drinks.db"
+    #Universal path til database
+    BASE_DIR = Path(__file__).resolve().parent
+    DB_PATH = BASE_DIR / 'Database' / 'drinks.db'
+    print(f"Resolved DB Path: {DB_PATH}")
     def get_connection(self):
         conn = sqlite3.connect(self.DB_PATH)
         conn.execute("PRAGMA foreign_keys = ON;")

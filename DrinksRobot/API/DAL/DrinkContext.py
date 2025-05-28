@@ -1,11 +1,13 @@
 import sqlite3
 from datetime import datetime
-
+from pathlib import Path
 
 
 class DrinkContext:
-    DB_PATH = r"C:\Users\ko2an\PycharmProjects\robotProgram_protoype-master\DrinksRobot\API\DAL\Database\drinks.db"
-
+   # DB_PATH = r"C:\Users\ko2an\PycharmProjects\robotProgram_protoype-master\DrinksRobot\API\DAL\Database\drinks.db"
+   # Universal path til database
+    BASE_DIR = Path(__file__).resolve().parent
+    DB_PATH = BASE_DIR / 'Database' / 'drinks.db'
     def get_connection(self):
         conn = sqlite3.connect(self.DB_PATH)
         conn.execute("PRAGMA foreign_keys = ON;")
