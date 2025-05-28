@@ -37,5 +37,6 @@ class BottleLogic:
         use_count = 0
         bottle_context.create_bottle(position, urscript_get, urscript_pour, urscript_back, img, title, bottle_type, use_count)
 
-    def add_count(self, bottle_id):
-        bottle_context.update_bottle_use_count(bottle_id)
+    def add_count(self, bottle_ids):
+        for bottle_id in bottle_ids:
+            bottle_context.update_bottle_use_count(bottle_id)

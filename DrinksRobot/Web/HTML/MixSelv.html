@@ -203,6 +203,18 @@ async function startMixing() {
     } catch (error) {
         console.error("Fejl ved kontakt til backend:", error);
     }
+    try {
+        await fetch('http://localhost:5001/api/add_bottle_counts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ bottles: selectedIds })
+        });
+
+    } catch (error) {
+        console.error("Fejl ved kontakt til backend:", error);
+    }
 
 
 }

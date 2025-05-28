@@ -13,8 +13,8 @@ class DrinkLogic:
         use_count = 0
         drink_context.create_drink_with_content(drink_name, img, bottles, use_count, )
 
-    def add_drink_count(self, position):
-        drink_context.update_drink_use_count(position)
+    def add_drink_count(self, drink_id):
+        drink_context.update_drink_use_count(drink_id)
 
     def get_drink_by_id(self, drink_id):
         drink = drink_context.get_drink_by_id(drink_id)

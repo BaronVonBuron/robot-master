@@ -59,9 +59,10 @@ def delete_bottle():
     else:
         return jsonify({"error": "Bottle not found"}), 404
 
-@BottleController.route('/counts', methods=['POST'])
-def add_count(bottle_id):
-    bottle_logic.add_count(bottle_id)
+@BottleController.route('/add_bottle_counts', methods=['POST'])
+def add_count():
+    bottle_ids = request.get_json().get('bottles', [])
+    bottle_logic.add_count(bottle_ids)
     return jsonify({"status": "success"}), 200
 
 @BottleController.route('/bottles_alch', methods=['GET'])

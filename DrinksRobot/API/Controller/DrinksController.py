@@ -14,7 +14,7 @@ DrinksController = Blueprint('DrinksController', __name__)
 
 
 # ROUTES
-@DrinksController.route('/drinks', methods=['GET'])
+@DrinksController.route('/get_drinks', methods=['GET'])
 def get_drinks():
     drinks = drink_logic.get_drinks()
     return drinks
@@ -32,10 +32,16 @@ def create_drink():
     drink_logic.create_drink_with_content(drink_name, img, bottles)
     return jsonify({"status": "success"}), 200
 
-@DrinksController.route('/drinks', methods=['GET'])
+@DrinksController.route('/get_drinks_by_id', methods=['GET'])
 def get_drink_by_id():
     drink_id = request.form.get('drink_id')
     drink = drink_logic.get_drink_by_id(drink_id)
     return drink
+
+@DrinksController.route('/add_count_drink', methods=['POST'])
+def add_count_drink():
+    drink_id = request.form.get('drink_id')
+    drink_logic.add_count_drink(drink_id)
+    return jsonify({"status": "success"}), 200
 
 
