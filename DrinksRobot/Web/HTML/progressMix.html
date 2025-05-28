@@ -5,7 +5,7 @@
   <title>Mix Selv - Din drink bliver lavet</title>
   <link rel="stylesheet" href="../CSS/MainStyle.css">
   <link rel="stylesheet" href="../CSS/ButtonStyle.css">
-  <link rel="stylesheet" href="../CSS/progress2.css">
+  <link rel="stylesheet" href="../CSS/progress.css">
 </head>
 <body>
 <div class="bg">
@@ -74,7 +74,28 @@
     .then(data => {
       if (data.program && data.program.trim() !== "") {
         const cleaned = data.program.replace(".urp", "");
-        document.getElementById("progressLabel").innerText = "Hælder " + cleaned;
+
+        let labelText = "Hælder...";
+
+        if (cleaned.startsWith("hentflaske")) {
+          labelText = "Henter flasker";
+        } else if (cleaned.startsWith("skenkflaske")) {
+          labelText = "Skænker";
+        } else if (cleaned.startsWith("tilbageflaske")) {
+          labelText = "Stiller flaske tilbage";
+        } else if (cleaned.startsWith("tilbagekop")) {
+          labelText = "Stiller kop tilbage";
+        } else if (cleaned.startsWith("tilbageflaske")) {
+          labelText = "Stiller flaske tilbage";
+        } else if (cleaned.startsWith("skenkkop")) {
+          labelText = "Skænker";
+        } else if (cleaned.startsWith("hentkop")) {
+          labelText = "Henter kop";
+        } else {
+          labelText = "Hælder " + cleaned;
+        }
+
+        document.getElementById("progressLabel").innerText = labelText;
       } else {
         document.getElementById("progressLabel").innerText = "Hælder...";
       }

@@ -88,7 +88,29 @@ function updateProgramLabel() {
     .then(data => {
       if (data.program && data.program.trim() !== "") {
         const cleaned = data.program.replace(".urp", "");
-        document.getElementById("progressLabel").innerText = "Hælder " + cleaned;
+
+        // Mapping af tekniske navne til bruger-venlige tekster
+        let labelText = "Hælder " + cleaned;
+
+        if (cleaned.startsWith("hentflaske")) {
+          labelText = "Henter flasker";
+        } else if (cleaned.startsWith("skenkflaske")) {
+          labelText = "Skænker";
+        } else if (cleaned.startsWith("tilbageflaske")) {
+          labelText = "Stiller flaske tilbage";
+        } else if (cleaned.startsWith("tilbagekop")) {
+          labelText = "Stiller kop tilbage";
+        } else if (cleaned.startsWith("tilbageflaske")) {
+          labelText = "Stiller flaske tilbage";
+        } else if (cleaned.startsWith("skenkkop")) {
+          labelText = "Skænker";
+        } else if (cleaned.startsWith("hentkop")) {
+          labelText = "Henter kop";
+        } else {
+          labelText = "Hælder " + cleaned;
+        }
+
+        document.getElementById("progressLabel").innerText = labelText;
       } else {
         document.getElementById("progressLabel").innerText = "Hælder...";
       }
