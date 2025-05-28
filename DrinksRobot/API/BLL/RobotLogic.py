@@ -14,6 +14,8 @@ class RobotLogic:
         self.program_map = {}  # maps ingredient name → [script1, script2, script3]
 
     def run_program(self, bottle_ids):
+        for bottle_id in bottle_ids:
+            bottle_context.update_bottle_use_count(bottle_id)
 
         if RobotState.pause_script_active:
             print("Pause-program er i gang. Venter på det afsluttes...")
@@ -41,7 +43,7 @@ class RobotLogic:
                 self.queue_scripts_for_bottle(scripts)
 
         print("✅ Alle flasker queued!")
-        bottle_context.update_bottle_use_count(bottle.bottle_id)
+
 
     def queue_scripts_for_bottle(self, script_list):
         for script in script_list:
