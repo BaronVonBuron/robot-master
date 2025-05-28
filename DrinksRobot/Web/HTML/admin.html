@@ -7,67 +7,68 @@
 </head>
 <body>
 
-    <h1>Admin</h1>
+<h1>Admin</h1>
 
-    <div class="button-row">
-        <button onclick="addBottle()">Tilføj flaske</button>
-        <button onclick="deleteBottle()">Slet flaske</button>
-        <button onclick="addDrink()">Tilføj drink</button>
-        <button onclick="deleteDrink()">Slet drink</button>
+<div class="button-row">
+    <button onclick="addBottle()">Tilføj flaske</button>
+    <button onclick="deleteBottle()">Slet flaske</button>
+    <button onclick="addDrink()">Tilføj drink</button>
+    <button onclick="deleteDrink()">Slet drink</button>
+    <button onclick="getAllBottles()">Hent flasker</button>
+</div>
+
+<div class="table-container">
+    <div class="scrollable-table">
+        <table id="bottlesTable">
+            <thead>
+            <tr>
+                <th>Flaske</th>
+                <th>Antal</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Flaskedata indsættes her -->
+            </tbody>
+        </table>
     </div>
 
-    <div class="table-container">
-        <div class="scrollable-table">
-            <table id="bottlesTable">
-                <thead>
-                    <tr>
-                        <th>Flaske</th>
-                        <th>Antal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Flaskedata indsættes her -->
-                </tbody>
-            </table>
-        </div>
-
-        <div class="scrollable-table">
-            <table id="drinksTable">
-                <thead>
-                    <tr>
-                        <th>Drink</th>
-                        <th>Antal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Drinkdata indsættes her -->
-                </tbody>
-            </table>
-        </div>
-
-        <div class="scrollable-table">
-            <table id="countTable">
-                <thead>
-                    <tr>
-                        <th>Fejlmeddeleser</th>
-                        <th>Antal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Antal indsættes her -->
-                </tbody>
-            </table>
-        </div>
+    <div class="scrollable-table">
+        <table id="drinksTable">
+            <thead>
+            <tr>
+                <th>Drink</th>
+                <th>Antal</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Drinkdata indsættes her -->
+            </tbody>
+        </table>
     </div>
 
-    <div class="control-row">
-        <button onclick="startRobot()">Start</button>
-        <button onclick="stopRobot()">Stop</button>
-        <button onclick="pauseRobot()">Pause</button>
-        <button onclick="restartRobot()">Genstart</button>
+    <div class="scrollable-table">
+        <table id="countTable">
+            <thead>
+            <tr>
+                <th>Fejlmeddeleser</th>
+                <th>Antal</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Antal indsættes her -->
+            </tbody>
+        </table>
     </div>
+</div>
 
-    <!-- Modal -->
+<div class="control-row">
+    <button onclick="startRobot()">Start</button>
+    <button onclick="stopRobot()">Stop</button>
+    <button onclick="pauseRobot()">Pause</button>
+    <button onclick="restartRobot()">Genstart</button>
+</div>
+
+<!-- Modal -->
 <div id="addBottleModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:1000;">
     <div style="background:white; padding:20px; margin:100px auto; width:400px; position:relative;">
         <h2>Tilføj Flaske</h2>
@@ -101,7 +102,7 @@
     </div>
 </div>
 
-    <!-- Slet Flaske Modal -->
+<!-- Slet Flaske Modal -->
 <div id="deleteBottleModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:1000;">
     <div style="background:white; padding:20px; margin:100px auto; width:400px; position:relative;">
         <h2>Slet Flaske</h2>
@@ -112,7 +113,7 @@
     </div>
 </div>
 
-    <!-- Tilføj Drink Modal -->
+<!-- Tilføj Drink Modal -->
 <div id="addDrinkModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:1000;">
     <div style="background:white; padding:20px; margin:100px auto; width:400px; position:relative;">
         <h2>Tilføj Drink</h2>
@@ -133,7 +134,7 @@
     </div>
 </div>
 
-    <!-- Slet Drink Modal -->
+<!-- Slet Drink Modal -->
 <div id="deleteDrinkModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:1000;">
     <div style="background:white; padding:20px; margin:100px auto; width:400px; position:relative;">
         <h2>Slet Drink</h2>
@@ -146,8 +147,7 @@
 
 
 
-
-    <script>
+<script>
     // Åbn og luk modal
     function addBottle() {
         document.getElementById("addBottleModal").style.display = "block";
@@ -161,273 +161,303 @@
     // Dummy funktioner til andre knapper
     let selectedBottleId = null;
 
-// Åbner modal og henter flasker
-function deleteBottle() {
-    fetch("http://localhost:5001/api/bottles")
-        .then(response => response.json())
-        .then(data => {
-            const bottleList = document.getElementById("bottleList");
-            bottleList.innerHTML = "";
-            selectedBottleId = null;
 
-            data.forEach(bottle => {
-                const li = document.createElement("li");
-                li.textContent = bottle.bottle_name;
-                li.dataset.id = bottle.bottle_id;
+    // Åbner modal og henter flasker
+    function deleteBottle() {
+        fetch("http://localhost:5001/api/bottles")
+            .then(response => response.json())
+            .then(data => {
+                const bottleList = document.getElementById("bottleList");
+                bottleList.innerHTML = "";
+                selectedBottleId = null;
 
-                li.onclick = () => {
-                    // Fjern 'selected' fra alle andre
-                    [...bottleList.children].forEach(child => child.classList.remove("selected"));
-                    // Marker valgt
-                    li.classList.add("selected");
-                    selectedBottleId = bottle.bottle_id;
-                };
+                data.forEach(bottle => {
+                    const li = document.createElement("li");
+                    li.textContent = bottle.bottle_name;
+                    li.dataset.id = bottle.bottle_id;
 
-                bottleList.appendChild(li);
+                    li.onclick = () => {
+                        // Fjern 'selected' fra alle andre
+                        [...bottleList.children].forEach(child => child.classList.remove("selected"));
+                        // Marker valgt
+                        li.classList.add("selected");
+                        selectedBottleId = bottle.bottle_id;
+                    };
+
+                    bottleList.appendChild(li);
+                });
+
+                document.getElementById("deleteBottleModal").style.display = "block";
+            })
+            .catch(error => {
+                console.error("Fejl ved hentning af flasker:", error);
+                alert("Kunne ikke hente flasker.");
+            });
+    }
+
+    function closeDeleteModal() {
+        document.getElementById("deleteBottleModal").style.display = "none";
+    }
+
+    function getAllBottles() {
+        fetch("http://localhost:5001/api/bottles")
+            .then(response => response.json())
+            .then(data => {
+                const bottlesTable = document.getElementById("bottlesTable").getElementsByTagName('tbody')[0];
+                bottlesTable.innerHTML = ""; // Clear the table
+
+                data.forEach(bottle => {
+                    const row = bottlesTable.insertRow();
+                    const cell1 = row.insertCell(0);
+                    const cell2 = row.insertCell(1);
+                    cell1.textContent = bottle.bottle_name;  // Display bottle name
+                    cell2.textContent = bottle.use_count;    // Display use count
+                });
+            })
+            .catch(error => console.error("Error fetching bottles:", error));
+    }
+
+    async function createBottle() {
+        const name = document.getElementById("name").value;
+        const image = document.getElementById("bottleImage").value;
+        const type = document.getElementById("type").value;
+        const urscript_get = document.getElementById("urscript_get").value;
+        const urscript_pour = document.getElementById("urscript_pour").value;
+        const urscript_back = document.getElementById("urscript_back").value;
+        const location = document.getElementById("location").value;
+
+        const formData = new FormData();
+        formData.append("position", location);
+        formData.append("urscript_get", urscript_get);
+        formData.append("urscript_pour", urscript_pour);
+        formData.append("urscript_back", urscript_back);
+        formData.append("image", image);
+        formData.append("name", name);
+        formData.append("type", type);
+
+        try {
+            const response = await fetch("http://localhost:5001/api/add_bottles", {
+                method: "POST",
+                body: formData
             });
 
-            document.getElementById("deleteBottleModal").style.display = "block";
-        })
-        .catch(error => {
-            console.error("Fejl ved hentning af flasker:", error);
-            alert("Kunne ikke hente flasker.");
-        });
-}
-
-function closeDeleteModal() {
-    document.getElementById("deleteBottleModal").style.display = "none";
-}
-
-async function createBottle() {
-    const name = document.getElementById("name").value;
-    const image = document.getElementById("bottleImage").value;
-    const type = document.getElementById("type").value;
-    const urscript_get = document.getElementById("urscript_get").value;
-    const urscript_pour = document.getElementById("urscript_pour").value;
-    const urscript_back = document.getElementById("urscript_back").value;
-    const location = document.getElementById("location").value;
-
-    const formData = new FormData();
-    formData.append("position", location);
-    formData.append("urscript_get", urscript_get);
-    formData.append("urscript_pour", urscript_pour);
-    formData.append("urscript_back", urscript_back);
-    formData.append("image", image);
-    formData.append("name", name);
-    formData.append("type", type);
-
-    try {
-        const response = await fetch("http://localhost:5001/api/add_bottles", {
-            method: "POST",
-            body: formData
-        });
-
-        if (response.ok) {
-            alert("Flaske tilføjet!");
-            closeModal();
-            // Optionally reset form:
-            document.getElementById("addBottleForm").reset();
-        } else {
-            const error = await response.text();
-            alert("Fejl ved tilføjelse: " + error);
+            if (response.ok) {
+                alert("Flaske tilføjet!");
+                closeModal();
+                // Optionally reset form:
+                document.getElementById("addBottleForm").reset();
+            } else {
+                const error = await response.text();
+                alert("Fejl ved tilføjelse: " + error);
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Netværksfejl.");
         }
-    } catch (err) {
-        console.error(err);
-        alert("Netværksfejl.");
+
     }
 
-}
+    function confirmDeleteBottle() {
+        if (!selectedBottleId) {
+            alert("Vælg en flaske først!");
+            return;
+        }
 
-function confirmDeleteBottle() {
-    if (!selectedBottleId) {
-        alert("Vælg en flaske først!");
-        return;
+        fetch("http://localhost:5001/api/delete_bottle", {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({bottle_id: selectedBottleId})
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Delete failed");
+                return response.json();
+            })
+            .then(data => {
+                alert("Flaske slettet!");
+                document.getElementById("deleteBottleModal").style.display = "none";
+                deleteBottle(); // Refresh the list after deletion
+            })
+            .catch(error => {
+                console.error("Fejl ved sletning af flaske:", error);
+                alert("Kunne ikke slette flaske.");
+            });
     }
-
-    fetch("http://localhost:5001/api/delete_bottle", {
-        method: "DELETE",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ bottle_id: selectedBottleId })
-    })
-    .then(response => {
-        if (!response.ok) throw new Error("Delete failed");
-        return response.json();
-    })
-    .then(data => {
-        alert("Flaske slettet!");
-        document.getElementById("deleteBottleModal").style.display = "none";
-        deleteBottle(); // Refresh the list after deletion
-    })
-    .catch(error => {
-        console.error("Fejl ved sletning af flaske:", error);
-        alert("Kunne ikke slette flaske.");
-    });
-}
 
     let selectedIngredients = [];
-async function ConfirmCreateDrink(){
 
-    const name = document.getElementById("drinkName").value;
-    const image = document.getElementById("image").value;
+    async function ConfirmCreateDrink() {
 
-    if (selectedIngredients.length === 0) {
-        alert("Vælg mindst én ingrediens!");
-        return;
-    }
+        const name = document.getElementById("drinkName").value;
+        const image = document.getElementById("image").value;
 
-    const formData = new FormData();
-    formData.append("drink_name", name);
-    formData.append("img", image);
-    formData.append("bottles", JSON.stringify(selectedIngredients));
-
-    try {
-        const response = await fetch("http://localhost:5001/api/add_drink", {
-            method: "POST",
-            body: formData
-        });
-
-        if (!response.ok) {
-            const err = await response.text();
-            throw new Error(err);
+        if (selectedIngredients.length === 0) {
+            alert("Vælg mindst én ingrediens!");
+            return;
         }
 
-        alert("Drink tilføjet!");
+        const formData = new FormData();
+        formData.append("drink_name", name);
+        formData.append("img", image);
+        formData.append("bottles", JSON.stringify(selectedIngredients));
 
-        closeAddDrinkModal();
-    } catch (err) {
-        console.error("Fejl ved tilføjelse af drink:", err);
-        alert("Kunne ikke tilføje drinken.");
+        try {
+            const response = await fetch("http://localhost:5001/api/add_drink", {
+                method: "POST",
+                body: formData
+            });
+
+            if (!response.ok) {
+                const err = await response.text();
+                throw new Error(err);
+            }
+
+            alert("Drink tilføjet!");
+
+            closeAddDrinkModal();
+        } catch (err) {
+            console.error("Fejl ved tilføjelse af drink:", err);
+            alert("Kunne ikke tilføje drinken.");
+        }
+
     }
 
-}
-function addDrink() {
-    selectedIngredients = [];
-    const list = document.getElementById("ingredientsList");
-    list.innerHTML = "";
+    function addDrink() {
+        selectedIngredients = [];
+        const list = document.getElementById("ingredientsList");
+        list.innerHTML = "";
 
-    fetch("http://localhost:5001/api/bottles") // henter flasker som ingredienser
-        .then(response => response.json())
-        .then(data => {
-            data.forEach(bottle => {
-                const li = document.createElement("li");
-                li.textContent = `${bottle.bottle_name} (${bottle.bottle_type})`;
-                li.dataset.id = bottle.bottle_id;
+        fetch("http://localhost:5001/api/bottles") // henter flasker som ingredienser
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(bottle => {
+                    const li = document.createElement("li");
+                    li.textContent = `${bottle.bottle_name} (${bottle.bottle_type})`;
+                    li.dataset.id = bottle.bottle_id;
 
-                li.onclick = () => {
-                    const bottle_id = li.dataset.id;
-                    if (selectedIngredients.includes(bottle_id)) {
-                        selectedIngredients = selectedIngredients.filter(i => i !== bottle_id);
-                        li.classList.remove("selected");
-                    } else {
-                        selectedIngredients.push(bottle_id);
+                    li.onclick = () => {
+                        const bottle_id = li.dataset.id;
+                        if (selectedIngredients.includes(bottle_id)) {
+                            selectedIngredients = selectedIngredients.filter(i => i !== bottle_id);
+                            li.classList.remove("selected");
+                        } else {
+                            selectedIngredients.push(bottle_id);
+                            li.classList.add("selected");
+                        }
+                    };
+
+                    list.appendChild(li);
+                });
+
+                document.getElementById("addDrinkModal").style.display = "block";
+            })
+            .catch(error => {
+                console.error("Fejl ved hentning af ingredienser:", error);
+                alert("Kunne ikke hente ingredienser.");
+            });
+    }
+
+    function closeAddDrinkModal() {
+        document.getElementById("addDrinkModal").style.display = "none";
+    }
+
+
+    function deleteDrink() {
+        fetch("http://localhost:5001/drinks") // henter drinks fra din tabel
+            .then(response => response.json())
+            .then(data => {
+                const drinkList = document.getElementById("drinkList");
+                drinkList.innerHTML = "";
+                selectedDrinkId = null;
+
+                data.forEach(drink => {
+                    const li = document.createElement("li");
+                    li.textContent = drink.name;
+                    li.dataset.id = drink.id;
+
+                    li.onclick = () => {
+                        [...drinkList.children].forEach(child => child.classList.remove("selected"));
                         li.classList.add("selected");
-                    }
-                };
+                        selectedDrinkId = drink.id;
+                    };
 
-                list.appendChild(li);
+                    drinkList.appendChild(li);
+                });
+
+                document.getElementById("deleteDrinkModal").style.display = "block";
+            })
+            .catch(error => {
+                console.error("Fejl ved hentning af drinks:", error);
+                alert("Kunne ikke hente drinks.");
             });
-
-            document.getElementById("addDrinkModal").style.display = "block";
-        })
-        .catch(error => {
-            console.error("Fejl ved hentning af ingredienser:", error);
-            alert("Kunne ikke hente ingredienser.");
-        });
-}
-
-function closeAddDrinkModal() {
-    document.getElementById("addDrinkModal").style.display = "none";
-}
-
-
-function deleteDrink() {
-    fetch("http://localhost:5001/drinks") // henter drinks fra din tabel
-        .then(response => response.json())
-        .then(data => {
-            const drinkList = document.getElementById("drinkList");
-            drinkList.innerHTML = "";
-            selectedDrinkId = null;
-
-            data.forEach(drink => {
-                const li = document.createElement("li");
-                li.textContent = drink.name;
-                li.dataset.id = drink.id;
-
-                li.onclick = () => {
-                    [...drinkList.children].forEach(child => child.classList.remove("selected"));
-                    li.classList.add("selected");
-                    selectedDrinkId = drink.id;
-                };
-
-                drinkList.appendChild(li);
-            });
-
-            document.getElementById("deleteDrinkModal").style.display = "block";
-        })
-        .catch(error => {
-            console.error("Fejl ved hentning af drinks:", error);
-            alert("Kunne ikke hente drinks.");
-        });
-}
-
-function closeDeleteDrinkModal() {
-    document.getElementById("deleteDrinkModal").style.display = "none";
-}
-
-function confirmDeleteDrink() {
-    if (!selectedDrinkId) {
-        alert("Vælg en drink først!");
-        return;
     }
 
-    if (!confirm("Er du sikker på, at du vil slette denne drink?")) return;
+    function closeDeleteDrinkModal() {
+        document.getElementById("deleteDrinkModal").style.display = "none";
+    }
 
-    fetch(`http://localhost:5001/api/drinks/${selectedDrinkId}`, {
-        method: 'DELETE'
-    })
-    .then(response => {
-        if (!response.ok) throw new Error("Drink kunne ikke slettes");
+    function confirmDeleteDrink() {
+        if (!selectedDrinkId) {
+            alert("Vælg en drink først!");
+            return;
+        }
 
-        alert("Drink slettet!");
-        closeDeleteDrinkModal();
-    })
-    .catch(error => {
-        console.error("Fejl ved sletning af drink:", error);
-        alert("Kunne ikke slette drinken.");
-    });
-}
+        if (!confirm("Er du sikker på, at du vil slette denne drink?")) return;
 
+        fetch(`http://localhost:5001/api/drinks/${selectedDrinkId}`, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Drink kunne ikke slettes");
 
-    function startRobot() { console.log("Start"); }
-    function stopRobot() { console.log("Stop"); }
+                alert("Drink slettet!");
+                closeDeleteDrinkModal();
+            })
+            .catch(error => {
+                console.error("Fejl ved sletning af drink:", error);
+                alert("Kunne ikke slette drinken.");
+            });
+    }
+
+    function startRobot() {
+        console.log("Start");
+    }
+
+    function stopRobot() {
+        console.log("Stop");
+    }
+
     function pauseRobot() {
-    fetch('http://localhost:5001/api/pause', {
-        method: 'POST'
-    }).then(response => {
-        if (!response.ok) {
-            console.error('Pause failed.');
-        } else {
-            console.log('Robot paused.');
-        }
-    }).catch(error => {
-        console.error('Network error:', error);
-    });
-}
+        fetch('http://localhost:5001/api/pause', {
+            method: 'POST'
+        }).then(response => {
+            if (!response.ok) {
+                console.error('Pause failed.');
+            } else {
+                console.log('Robot paused.');
+            }
+        }).catch(error => {
+            console.error('Network error:', error);
+        });
+    }
+
     function restartRobot() {
-    fetch('http://localhost:5001/api/resume', {
-        method: 'POST'
-    }).then(response => {
-        if (!response.ok) {
-            console.error('resume failed.');
-        } else {
-            console.log('Robot resumed.');
-        }
-    }).catch(error => {
-        console.error('Network error:', error);
-    });
-}
+        fetch('http://localhost:5001/api/resume', {
+            method: 'POST'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Restart failed.');
+                } else {
+                    console.log('Robot restarted.');
+                }
+            })
+            .catch(error => {
+                console.error('Network error:', error);
+            });
+    }
+
 </script>
 </body>
 </html>
