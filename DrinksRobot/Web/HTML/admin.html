@@ -23,7 +23,7 @@
             <thead>
             <tr>
                 <th>Flaske</th>
-                <th>Antal</th>
+                <th>Kørt</th>
             </tr>
             </thead>
             <tbody>
@@ -198,6 +198,10 @@
     function closeDeleteModal() {
         document.getElementById("deleteBottleModal").style.display = "none";
     }
+
+    window.onload = function() {
+        getAllBottles(); // Hent flasker ved indlæsning
+    };
 
     function getAllBottles() {
         fetch("http://localhost:5001/api/bottles")
