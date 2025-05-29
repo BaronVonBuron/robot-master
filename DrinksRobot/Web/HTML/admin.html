@@ -14,7 +14,7 @@
     <button onclick="deleteBottle()">Slet flaske</button>
     <button onclick="addDrink()">Tilføj drink</button>
     <button onclick="deleteDrink()">Slet drink</button>
-    <button onclick="getAllBottles()">Hent flasker</button>
+    <button onclick="getAllBottles(), getAllDrinks()">Opdater</button>
 </div>
 
 <div class="table-container">
@@ -37,7 +37,7 @@
             <thead>
             <tr>
                 <th>Drink</th>
-                <th>Antal</th>
+                <th>Kørt</th>
             </tr>
             </thead>
             <tbody>
@@ -201,6 +201,7 @@
 
     window.onload = function() {
         getAllBottles(); // Hent flasker ved indlæsning
+        getAllDrinks();
     };
 
     function getAllBottles() {
@@ -219,6 +220,24 @@
                 });
             })
             .catch(error => console.error("Error fetching bottles:", error));
+    }
+
+    function getAllDrinks() {
+        fetch("http://localhost:5001/api/get_drinks")
+            .then(response => response.json())
+            .then(data => {
+                const drinksTable = document.getElementById("drinksTable").getElementsByTagName('tbody')[0];
+                drinksTable.innerHTML = ""; // Clear the table
+
+                data.forEach(drink => {
+                    const row = drinksTable.insertRow();
+                    const cell1 = row.insertCell(0);
+                    const cell2 = row.insertCell(1);
+                    cell1.textContent = drink.drink_name;  // Display drink name
+                    cell2.textContent = drink.use_count;  // Display count
+                });
+            })
+            .catch(error => console.error("Error fetching drinks:", error));
     }
 
     async function createBottle() {
