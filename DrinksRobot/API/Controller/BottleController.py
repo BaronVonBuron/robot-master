@@ -1,5 +1,7 @@
 from flask import Blueprint, request, jsonify
 from DrinksRobot.API.BLL.BottleLogic import BottleLogic
+from DrinksRobot.API.DAL.BottleContext import Bottle
+
 bottle_logic = BottleLogic()
 
 BottleController = Blueprint('BottleController', __name__)

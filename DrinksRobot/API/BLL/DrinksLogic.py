@@ -7,7 +7,15 @@ class DrinkLogic:
 
     def get_drinks(self):
         drinks = drink_context.get_all_drinks()
-        return drinks
+        drink_list = []
+        for drink in drinks:
+            drink_list.append({
+                "drink_id": drink[0],
+                "drink_name": drink[1],
+                "drink_image": drink[2],
+                "use_count": drink[3]
+            })
+        return drink_list
 
     def create_drink_with_content(self, drink_name, img, bottles):
         use_count = 0

@@ -17,7 +17,7 @@ DrinksController = Blueprint('DrinksController', __name__)
 @DrinksController.route('/get_drinks', methods=['GET'])
 def get_drinks():
     drinks = drink_logic.get_drinks()
-    return drinks
+    return jsonify(drinks)
 
 @DrinksController.route('/add_drink', methods=['POST'])
 def create_drink():
