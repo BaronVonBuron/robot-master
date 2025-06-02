@@ -37,63 +37,10 @@
 </div>
 
 <script>
-  const drinks = [
-    {
-        name: "brandbil",
-        image: "../Images/filur.png",
-        ingredients: ["2 cl. CUBA Apricot", "8 cl. Appelsinjuice", "4 cl. Rød sodavand"]
-    },
-    {
-        name: "gin_hass",
-        image: "../Images/pagnebrus.png",
-        ingredients: ["2 cl. CUBA Caramel", "1 cl. BARMIX Lime Sirup", "Grøn sodavand"]
-    },
-    {
-        name: "rom_og_cola",
-        image: "../Images/uhlala.png",
-        ingredients: ["2 cl. CUBA Strawberry", "1 cl. BARMIX Lime Sirup", "Sprite"]
-    },
-    {
-        name: "solstang",
-        image: "../Images/solstang.png",
-        ingredients: ["2 cl. CUBA Strawberry", "BARMIX Lime Sirup", "BARMIX Grenadine Sirup", "Lemon sodavand"]
-    },
-    {
-        name: "Isbjørn",
-        image: "../Images/isbjoern.png",
-        ingredients: ["2 cl. CUBA Orange", "Sprite"]
-    },
-    {
-        name: "Ananas Split",
-        image: "../Images/ananasSplit.png",
-        ingredients: ["2 cl. CUBA Pineapple", "Cola", "Lime"]
-    },
-    {
-        name: "Kæmpe Læske",
-        image: "../Images/kaempeLaeske.png",
-        ingredients: ["2 cl. CUBA Dry Lemon", "BARMIX Lime Sirup", "Sprite"]
-    },
-    {
-        name: "New York",
-        image: "../Images/NewYork.png",
-        ingredients: ["2 cl. CUBA Dry Lemon", "8 cl. Tonic", "Friskpresset citronsaft"]
-    },
-    {
-        name: "Must Have",
-        image: "../Images/mustHave.png",
-        ingredients: ["2 cl. CUBA Mango", "1 cl. Solbærsirup", "8 cl. Ginger beer"]
-    },
-    {
-        name: "Twister",
-        image: "../Images/twister.png",
-        ingredients: ["2 cl. CUBA Pineapple", "2 cl. CUBA Strawberry", "Lemon sodavand"]
-    }
-];
-
-
+  let drinks = []; // tom ved start
   let startIndex = 0;
   const drinksPerPage = 5;
-  const drinkList = document.getElementById("drinkList");
+  const drinkList = document.getElementById('drinkList');
 
   function getDrinkColor(index) {
     const orange = [0, 4, 5, 9];
@@ -106,15 +53,57 @@
     return "";
   }
 
+window.onload = async function () {
+  try {
+    const res = await fetch('http://localhost:5001/api/get_drinks');
+    const data = await res.json();
+
+    console.log("Drinks data:", data);
+
+    if (Array.isArray(data)) {
+      // Map backend data to frontend format
+      drinks = data.map(item => ({
+        id: item.drink_id,
+        name: item.drink_name,
+        image: "../Images/" + item.drink_image,
+        price: item.use_count, // Assuming use_count is used as price
+        ingredients: item.ingredients || [] // Handle ingredients if available
+      }));
+      updateDrinkDisplay();
+    } else {
+      console.error("Expected an array of objects, but got:", data);
+    }
+  } catch (error) {
+    console.error("Failed to fetch drinks:", error);
+  }
+};
+
+
   function updateDrinkDisplay() {
-    drinkList.innerHTML = "";
+    if (!Array.isArray(drinks) || drinks.length === 0) {
+        console.warn('No drinks available to display');
+        drinkList.innerHTML = '<p style="color:white">No drinks available.</p>';
+        return;
+    }
+
+    drinkList.innerHTML = ''; // Clear previous content
     for (let i = 0; i < drinksPerPage; i++) {
-      let drinkIndex = (startIndex + i) % drinks.length;
-      const btn = document.createElement("button");
-      btn.className = `${getDrinkColor(drinkIndex)} DrinksKnapper`;
-      btn.innerHTML = `<h3>${drinks[drinkIndex].name}</h3><img src="${drinks[drinkIndex].image}" alt="${drinks[drinkIndex].name}">`;
-      btn.onclick = () => sendDrinkInfo(drinks[drinkIndex].name, drinks[drinkIndex].image, drinks[drinkIndex].ingredients);
-      drinkList.appendChild(btn);
+        const drinkIndex = (startIndex + i) % drinks.length;
+        const drink = drinks[drinkIndex];
+
+        if (!drink || typeof drink.name !== 'string' || typeof drink.image !== 'string') {
+            console.warn('Invalid drink data:', drink);
+            continue;
+        }
+
+        const btn = document.createElement('button');
+        btn.className = `${getDrinkColor(drinkIndex)} DrinksKnapper`;
+        btn.innerHTML = `
+            <h3>${drink.name}</h3>
+            <img src="${drink.image}" alt="${drink.name}">
+        `;
+        btn.onclick = () => sendDrinkInfo(drink.name, drink.image, drink.ingredients || [], drink.id); // Pass drink.id
+        drinkList.appendChild(btn);
     }
   }
 
@@ -128,15 +117,17 @@
     updateDrinkDisplay();
   }
 
-  function sendDrinkInfo(drinkName, drinkImage, drinkIngredients) {
-  sessionStorage.setItem("selectedDrinkName", drinkName);
-  sessionStorage.setItem("selectedDrinkImage", drinkImage);
-  sessionStorage.setItem("selectedDrinkIngredients", JSON.stringify(drinkIngredients));
-  window.location.href = "valgtDrink.html"; // Gå til den nye side
-}
-
-
-  updateDrinkDisplay();
+  function sendDrinkInfo(drinkName, drinkImage, drinkIngredients, drinkId) {
+    if (!drinkId) {
+        console.error("Drink ID is missing.");
+        return;
+    }
+    localStorage.setItem("selectedDrinkId", drinkId);
+    sessionStorage.setItem("selectedDrinkName", drinkName);
+    sessionStorage.setItem("selectedDrinkImage", drinkImage);
+    sessionStorage.setItem("selectedDrinkIngredients", JSON.stringify(drinkIngredients));
+    window.location.href = "valgtDrink.html"; // Navigate to the new page
+  }
 </script>
 
 </body>

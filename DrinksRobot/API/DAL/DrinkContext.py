@@ -4,10 +4,10 @@ from pathlib import Path
 
 
 class DrinkContext:
-   # DB_PATH = r"C:\Users\ko2an\PycharmProjects\robotProgram_protoype-master\DrinksRobot\API\DAL\Database\drinks.db"
-   # Universal path til database
+    # Universal path til database
     BASE_DIR = Path(__file__).resolve().parent
     DB_PATH = BASE_DIR / 'Database' / 'drinks.db'
+
     def get_connection(self):
         conn = sqlite3.connect(self.DB_PATH)
         conn.execute("PRAGMA foreign_keys = ON;")
@@ -17,26 +17,25 @@ class DrinkContext:
         conn = self.get_connection()
         cursor = conn.cursor()
         try:
-
             cursor.execute("""
-                   INSERT INTO DrinkTable (DrinkName, Img, UseCount)
-                   VALUES (?, ?, ?)
-               """, (drink_name, img, use_count))
+                INSERT INTO DrinkTable (DrinkName, Img, UseCount)
+                VALUES (?, ?, ?)
+            """, (drink_name, img, use_count))
             drink_id = cursor.lastrowid
 
             for bottle_id in bottles:
                 bottle_id = int(bottle_id)
                 cursor.execute("""
-                       SELECT Title FROM BottleTable WHERE bottleId = ?
-                   """, (bottle_id,))
+                    SELECT Title FROM BottleTable WHERE bottleId = ?
+                """, (bottle_id,))
                 result = cursor.fetchone()
 
                 if result:
                     bottle_name = result[0]
                     cursor.execute("""
-                           INSERT INTO ContentTable (BottleName, BottleId, DrinkId)
-                           VALUES (?, ?, ?)
-                       """, (bottle_name, bottle_id, drink_id ))
+                        INSERT INTO ContentTable (BottleName, BottleId, DrinkId)
+                        VALUES (?, ?, ?)
+                    """, (bottle_name, bottle_id, drink_id))
                 else:
                     print(f"Warning: Bottle with id {bottle_id} not found.")
 
@@ -53,16 +52,16 @@ class DrinkContext:
             conn.close()
 
     def update_drink_use_count(self, drink_id):
-            conn = self.get_connection()
-            cursor = conn.cursor()
-            cursor.execute("""
-                UPDATE DrinkTable
-                SET UseCount = UseCount + 1
-                WHERE DrinkId = ?
-            """, (drink_id,))
-            conn.commit()
-            conn.close()
-            print(f"UseCount for drink {drink_id} er nu opdateret.")
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE DrinkTable
+            SET UseCount = UseCount + 1
+            WHERE DrinkId = ?
+        """, (drink_id,))
+        conn.commit()
+        conn.close()
+        print(f"UseCount for drink {drink_id} er nu opdateret.")
 
     def get_all_drinks(self):
         conn = self.get_connection()
@@ -82,6 +81,29 @@ class DrinkContext:
         conn.close()
         return result
 
+    def get_bottle_ids_by_drink_id(self, drink_id):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT BottleId
+            FROM ContentTable
+            WHERE DrinkId = ?
+        """, (drink_id,))
+        bottle_ids = [row[0] for row in cursor.fetchall()]
+        conn.close()
+        return bottle_ids
+
+    def get_urscripts_by_bottle_id(self, bottle_id):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT URScriptGet, URScriptPour, URScriptBack
+            FROM BottleTable
+            WHERE BottleId = ?
+        """, (bottle_id,))
+        urscripts = cursor.fetchone()
+        conn.close()
+        return urscripts if urscripts else []
 
 
 

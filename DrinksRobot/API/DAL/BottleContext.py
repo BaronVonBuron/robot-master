@@ -75,7 +75,7 @@ class BottleContext:
                 """, (bottle_id,))
             row = cursor.fetchone()
             if row:
-                bottle_list.append(MinimalBottle(*row))  # Use your minimal class
+                bottle_list.append(BottleContext.MinimalBottle(*row))  # Use your minimal class
 
         conn.close()
         return bottle_list

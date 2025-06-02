@@ -40,3 +40,16 @@ class BottleLogic:
     def add_count(self, bottle_ids):
         for bottle_id in bottle_ids:
             bottle_context.update_bottle_use_count(bottle_id)
+
+    def get_bottle_by_id(self, bottle_id):
+        bottles = bottle_context.get_Bottles_with_id([bottle_id])
+        if bottles:
+            bottle = bottles[0]
+            return {
+                "bottle_id": bottle.bottle_id,
+                "bottle_name": bottle.title,
+                "urscript_get": bottle.urscript_get,
+                "urscript_pour": bottle.urscript_pour,
+                "urscript_back": bottle.urscript_back
+            }
+        return {"error": f"Bottle with ID {bottle_id} not found"}

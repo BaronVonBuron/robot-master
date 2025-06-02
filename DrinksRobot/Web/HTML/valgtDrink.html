@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>Valgt Drink</title>
   <link rel="stylesheet" href="../CSS/MainStyle.css">
-    <link rel="stylesheet" href="../CSS/ButtonStyle.css">
-    <link rel="stylesheet" href="../CSS/ValgDrinkStyle.css">
+  <link rel="stylesheet" href="../CSS/ButtonStyle.css">
+  <link rel="stylesheet" href="../CSS/ValgDrinkStyle.css">
 </head>
 <body>
 <div class="bg">
@@ -16,7 +16,7 @@
         <div class="ListContainer">
             <ul id="ingredientsList"></ul>
         </div>
-        </div>
+      </div>
     <div class="buttonDiv">
         <button class="glow-button-orange buttons" onclick="window.location.href='VaelgDrinks.html'">Tilbage</button>
         <button class="glow-button-green buttons" onclick="startProgress()">Start</button>
@@ -42,16 +42,71 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-function startProgress() {
-    const drinkName = sessionStorage.getItem("selectedDrinkName") || sessionStorage.getItem("drinkName") || "Ukendt Drink";
-    const drinkImage = sessionStorage.getItem("selectedDrinkImage") || "../Images/default.png";
-    const ingredients = sessionStorage.getItem("selectedDrinkIngredients") || sessionStorage.getItem("ingredients") || "[]";
+async function startProgress() {
+    const drinkId = localStorage.getItem("selectedDrinkId");
 
-    sessionStorage.setItem("progressDrinkName", drinkName);
-    sessionStorage.setItem("progressDrinkImage", drinkImage);
-    sessionStorage.setItem("progressDrinkIngredients", ingredients);
+    if (!drinkId) {
+        alert("Drink ID mangler. Prøv at vælge drinken igen.");
+        return;
+    }
 
-    window.location.href = "progressFL.html";
+    try {
+        // 1. Hent flasker tilknyttet drinken
+        const bottlesResponse = await fetch(`http://localhost:5001/api/drink_bottles/${drinkId}`);
+        if (!bottlesResponse.ok) {
+            throw new Error(`Fejl ved hentning af flasker: ${bottlesResponse.status}`);
+        }
+
+        const bottleIds = await bottlesResponse.json();
+
+        if (!Array.isArray(bottleIds) || bottleIds.length === 0) {
+            alert("Ingen flasker fundet for denne drink.");
+            return;
+        }
+
+        // 2. Hent URScripts for hver flaske
+        const allScripts = [];
+
+        for (const bottle of bottleIds) {
+            const scriptResponse = await fetch(`http://localhost:5001/api/scripts/${bottle.bottle_id}`);
+            if (!scriptResponse.ok) {
+                console.warn(`Fejl ved hentning af URScripts for flaske ${bottle.bottle_id}: ${scriptResponse.status}`);
+                continue;
+            }
+
+            const scripts = await scriptResponse.json();
+
+            if (!Array.isArray(scripts) || scripts.length !== 3) {
+                console.warn(`Ugyldige URScripts for flaske ${bottle.bottle_id}`);
+                continue;
+            }
+
+            allScripts.push(...scripts);
+        }
+
+        if (allScripts.length === 0) {
+            alert("Ingen URScripts fundet for denne drink.");
+            return;
+        }
+
+        // 3. Send samlet kø af URScripts til backend
+        const runResponse = await fetch('http://localhost:5001/run_urscript', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ scripts: allScripts })
+        });
+
+        if (!runResponse.ok) {
+            throw new Error(`Fejl ved afsendelse af URScripts: ${runResponse.status}`);
+        }
+
+        // 4. Gå til progress side
+        window.location.href = "progressFL.html";
+
+    } catch (err) {
+        console.error("Fejl under startProgress:", err);
+        alert("Noget gik galt. Se konsollen for detaljer.");
+    }
 }
 </script>
 </body>

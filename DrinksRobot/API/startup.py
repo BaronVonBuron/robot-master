@@ -2,6 +2,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+
+from DrinksRobot.API.Helpers.RobotComms import RobotComms
 from DrinksRobot.API.BLL.RobotLogic import RobotLogic
 from DrinksRobot.API.Helpers.ScriptQueue import ScriptQueue
 

@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from DrinksRobot.API.BLL.BottleLogic import BottleLogic
 from DrinksRobot.API.DAL.BottleContext import Bottle
+from DrinksRobot.API.DAL.DrinkContext import DrinkContext
 
 bottle_logic = BottleLogic()
 
@@ -76,3 +77,23 @@ def get_bottles_alch():
 def get_bottles_nonalch():
     bottles = bottle_logic.get_nonalch_bottles()
     return jsonify(bottles)
+
+@BottleController.route('/drink_urscripts/<int:drink_id>', methods=['GET'])
+def get_drink_urscripts(drink_id):
+    try:
+        drink_context = DrinkContext()
+        bottle_ids = drink_context.get_bottle_ids_by_drink_id(drink_id)
+        urscripts = [drink_context.get_urscripts_by_bottle_id(bottle_id) for bottle_id in bottle_ids]
+        return jsonify(urscripts), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@BottleController.route('/drink_bottles/<int:drink_id>', methods=['GET'])
+def get_drink_bottles(drink_id):
+    try:
+        drink_context = DrinkContext()
+        bottle_ids = drink_context.get_bottle_ids_by_drink_id(drink_id)
+        bottles = [bottle_logic.get_bottle_by_id(bottle_id) for bottle_id in bottle_ids]
+        return jsonify(bottles), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
