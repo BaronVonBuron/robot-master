@@ -387,7 +387,7 @@
 
 
     function deleteDrink() {
-        fetch("http://localhost:5001/drinks") // henter drinks fra din tabel
+        fetch("http://localhost:5001/api/get_drinks") // henter drinks fra din tabel
             .then(response => response.json())
             .then(data => {
                 const drinkList = document.getElementById("drinkList");
@@ -396,13 +396,13 @@
 
                 data.forEach(drink => {
                     const li = document.createElement("li");
-                    li.textContent = drink.name;
-                    li.dataset.id = drink.id;
+                    li.textContent = drink.drink_name;
+                    li.dataset.id = drink.drink_id;
 
                     li.onclick = () => {
                         [...drinkList.children].forEach(child => child.classList.remove("selected"));
                         li.classList.add("selected");
-                        selectedDrinkId = drink.id;
+                        selectedDrinkId = drink.drink_id;
                     };
 
                     drinkList.appendChild(li);
