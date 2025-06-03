@@ -218,6 +218,13 @@ async function startMixing() {
 
 
 }
+    // Luk modal når der klikkes udenfor
+    window.onclick = function(event) {
+        const modal = document.getElementById("selectionModal");
+        if (event.target === modal) {
+            closeModal();
+        }
+    };
 </script>
 
 </body>
