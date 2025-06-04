@@ -45,50 +45,47 @@ document.addEventListener("DOMContentLoaded", function () {
 async function startProgress() {
     const drinkId = localStorage.getItem("selectedDrinkId");
     const bottlesString = sessionStorage.getItem("selectedDrinkIngredients");
-    const bottles = JSON.parse(bottlesString);
-    const bottle_ids = bottles.map(bottle => bottle.bottle_id);
 
-    if (!drinkId) {
-        alert("Drink ID mangler. Prøv at vælge drinken igen.");
+    if (!drinkId || !bottlesString) {
+        alert("Drink eller flasker mangler. Prøv igen.");
+        return;
+    }
+
+    let bottle_ids;
+    try {
+        const bottles = JSON.parse(bottlesString);
+        bottle_ids = bottles.map(bottle => bottle.bottle_id);
+    } catch (error) {
+        console.error("Fejl ved parsing af flasker:", error);
         return;
     }
 
     try {
         await fetch('http://localhost:5001/api/mixdrink', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ bottles: bottle_ids })
         });
 
-    } catch (error) {
-        console.error("Fejl ved kontakt til backend:", error);
-    }
-    try {
         await fetch('http://localhost:5001/api/add_bottle_counts', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ bottles: bottle_ids })
         });
 
-    } catch (error) {
-        console.error("Fejl ved kontakt til backend:", error);
-    }
-    try {
         await fetch('http://localhost:5001/api/add_count_drink', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ drink_id: drinkId })
         });
 
+        window.location.href = "progressFL.html"; // Proceed if everything succeeded
+
     } catch (error) {
-        console.error("Fejl ved kontakt til backend:", error);
+        console.error("Fejl under en af forespørgslerne:", error);
+        alert("Noget gik galt. Se konsollen for detaljer.");
     }
+
 
     /*try {
         // 1. Hent flasker tilknyttet drinken
