@@ -105,6 +105,40 @@ class DrinkContext:
         conn.close()
         return urscripts if urscripts else []
 
+    def get_all_drinks_with_bottles(self):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT 
+                d.DrinkId,
+                d.DrinkName,
+                d.Img,
+                b.BottleId,
+                b.Title
+            FROM DrinkTable d
+            LEFT JOIN ContentTable c ON d.DrinkId = c.DrinkId
+            LEFT JOIN BottleTable b ON c.BottleId = b.BottleId
+            ORDER BY d.DrinkId
+        """)
+        rows = cursor.fetchall()
+        conn.close()
+        drinks = {}
+        for row in rows:
+            drink_id = row[0]
+            if drink_id not in drinks:
+                drinks[drink_id] = {
+                    "DrinkId": row[0],
+                    "DrinkName": row[1],
+                    "Img": row[2],
+                    "Bottles": []
+                }
+            if row[3] is not None:
+                drinks[drink_id]["Bottles"].append({
+                    "BottleId": row[3],
+                    "Title": row[4]
+                })
+        return list(drinks.values())
+
 
 
 

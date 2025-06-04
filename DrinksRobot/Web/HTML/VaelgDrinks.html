@@ -67,7 +67,7 @@ window.onload = async function () {
         name: item.drink_name,
         image: "../Images/" + item.drink_image,
         price: item.use_count, // Assuming use_count is used as price
-        ingredients: item.ingredients || [] // Handle ingredients if available
+        ingredients: item.bottles || [] // Handle ingredients if available
       }));
       updateDrinkDisplay();
     } else {
@@ -101,6 +101,9 @@ window.onload = async function () {
         btn.innerHTML = `
             <h3>${drink.name}</h3>
             <img src="${drink.image}" alt="${drink.name}">
+            <p style="color: white; font-size: 26px;">
+              ${drink.ingredients.map(ing => ing.title).join(", ")}
+            </p>
         `;
         btn.onclick = () => sendDrinkInfo(drink.name, drink.image, drink.ingredients || [], drink.id); // Pass drink.id
         drinkList.appendChild(btn);
