@@ -36,9 +36,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const ingredientsList = document.getElementById("ingredientsList");
     ingredients.forEach(ingredient => {
-        const li = document.createElement("li");
-        li.innerText = ingredient;
-        ingredientsList.appendChild(li);
+    const li = document.createElement("li");
+    li.innerText = ingredient.title || "Ukendt ingrediens";
+    ingredientsList.appendChild(li);
     });
 });
 
