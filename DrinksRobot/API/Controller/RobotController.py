@@ -4,7 +4,7 @@ import json
 def create_robot_controller(robot_logic):
     RobotController = Blueprint('RobotController', __name__)
 
-    @RobotController.route('/createdrink', methods=['POST'])
+    @RobotController.route('/mixdrink', methods=['POST'])
     def create_drink():
         try:
             data = request.get_json()
