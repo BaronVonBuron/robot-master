@@ -44,12 +44,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 async function startProgress() {
     const drinkId = localStorage.getItem("selectedDrinkId");
+
     const bottlesString = sessionStorage.getItem("selectedDrinkIngredients");
 
     if (!drinkId || !bottlesString) {
         alert("Drink eller flasker mangler. Prøv igen.");
         return;
     }
+    let drink_id = JSON.parse(drinkId)
 
     let bottle_ids;
     try {
@@ -76,7 +78,7 @@ async function startProgress() {
         await fetch('http://localhost:5001/api/add_count_drink', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ drink_id: drinkId })
+            body: JSON.stringify({ drink_id: drink_id })
         });
 
         window.location.href = "progressFL.html"; // Proceed if everything succeeded

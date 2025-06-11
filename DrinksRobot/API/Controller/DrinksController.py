@@ -40,8 +40,8 @@ def get_drink_by_id():
 
 @DrinksController.route('/add_count_drink', methods=['POST'])
 def add_count_drink():
-    drink_id = request.form.get('drink_id')
-    drink_logic.add_count_drink(drink_id)
+    drink_id = request.get_json().get('drink_id')
+    drink_logic.add_drink_count(drink_id)
     return jsonify({"status": "success"}), 200
 
 
