@@ -14,6 +14,7 @@ class DrinkLogic:
                 "drink_id": drink["DrinkId"],
                 "drink_name": drink["DrinkName"],
                 "drink_image": drink["Img"],
+                "use_count": drink["UseCount"],
                 "bottles": [
                     {
                         "bottle_id": bottle["BottleId"],

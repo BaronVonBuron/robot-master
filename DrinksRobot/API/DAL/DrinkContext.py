@@ -113,6 +113,7 @@ class DrinkContext:
                 d.DrinkId,
                 d.DrinkName,
                 d.Img,
+                d.UseCount,
                 b.BottleId,
                 b.Title
             FROM DrinkTable d
@@ -130,12 +131,13 @@ class DrinkContext:
                     "DrinkId": row[0],
                     "DrinkName": row[1],
                     "Img": row[2],
+                    "UseCount": row[3],
                     "Bottles": []
                 }
             if row[3] is not None:
                 drinks[drink_id]["Bottles"].append({
-                    "BottleId": row[3],
-                    "Title": row[4]
+                    "BottleId": row[4],
+                    "Title": row[5]
                 })
         return list(drinks.values())
 
