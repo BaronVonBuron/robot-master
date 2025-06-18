@@ -8,13 +8,21 @@
     <link rel="stylesheet" href="../CSS/MainStyle.css">
     <script>
         function adgangskodeCheck() {
-            const kode = prompt("Indtast adgangskode:");
-            if (kode === "1234") {
-                window.location.href = "admin.html";
-            } else {
-                alert("Forkert adgangskode!");
-            }
+        const kode = prompt("Indtast adgangskode:");
+        if (kode === "1234") {
+            window.location.href = "admin.html";
+        } else {
+            alert("Forkert adgangskode!");
         }
+    }
+
+    document.addEventListener("keydown", function(event) {
+        // Ctrl + A (event.key === 'a' for bogstavet, og event.ctrlKey for Ctrl)
+        if (event.ctrlKey && event.key.toLowerCase() === "a") {
+            event.preventDefault(); // forhindrer browserens standard Ctrl+A-funktion (markér alt)
+            adgangskodeCheck();
+        }
+    });
     </script>
 </head>
 <body>
@@ -34,9 +42,6 @@
         </div>
 
     </div>
-<button  onclick="adgangskodeCheck()">
 
-                <p class="KnapTekst">Admin</p>
-            </button>
 </body>
 </html>
