@@ -63,11 +63,13 @@ async function startProgress() {
     }
 
     try {
+        window.location.href = "progressMix.html";
         await fetch('http://localhost:5001/api/mixdrink', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ bottles: bottle_ids })
         });
+
 
         await fetch('http://localhost:5001/api/add_bottle_counts', {
             method: 'POST',
@@ -80,8 +82,9 @@ async function startProgress() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ drink_id: drink_id })
         });
+        //window.location.href = "progressFL.html"; // Proceed if everything succeeded
 
-        window.location.href = "progressFL.html"; // Proceed if everything succeeded
+
 
     } catch (error) {
         console.error("Fejl under en af forespørgslerne:", error);

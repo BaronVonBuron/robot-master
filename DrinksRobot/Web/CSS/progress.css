@@ -26,9 +26,9 @@
 
 .buttonDiv {
     display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    height: 100%; /* Ensure it takes the full height of the parent */
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }
 
 .DrinkIMG {
@@ -46,18 +46,18 @@
 
 .ListContainer {
     display: flex;
-    justify-content: center; /* Centrer containeren horisontalt */
+    justify-content: center;
     padding: 20px;
 }
 
 .progressWrapper {
   position: absolute;
   top: 50%;
-  right: 1400px;             /* Juster position efter behov */
+  right: 90px;
   transform: translateY(-50%);
-  width: 1550px;            /* Bredden på progressbaren */
+  width: 1550px;
   height: 125px;
-  background-color: #ccc;  /* Grå baggrund */
+  background-color: #ccc;
   border-radius: 15px;
   overflow: hidden;
   z-index: 5;
@@ -82,8 +82,8 @@
 
 #progressLabel {
   position: fixed;
-  top: 1200px;
-  right: 2000px;
+  top: 450px;
+  right: 650px;
   font-size: 102px;
   font-weight: bold;
   color: white;
