@@ -10,7 +10,9 @@
 <body>
 <div class="bg">
   <div class="overlay">
+
     <div class="container">
+
       <h1>Din drink mixes...</h1>
       <h2 id="drinkTitle"></h2>
       <img class="DrinkIMG" id="drinkImage" src="../Images/mystery.png" width="100">
@@ -22,6 +24,9 @@
     <div class="progressWrapper">
       <div id="progressBar"></div>
     </div>
+  </div>
+  <div class="buttonDiv">
+      <button id="backbutton" onclick="backToMain()"> Tilbage</button>
   </div>
 </div>
 
@@ -46,6 +51,9 @@
 
     pollProgress();
   });
+  function backToMain(){
+    window.location.href = "index.html"
+  }
 
   function pollProgress() {
     fetch('http://localhost:5001/robot_progress')
@@ -67,6 +75,7 @@
         setTimeout(pollProgress, 2000);
       });
   }
+
 
  function updateProgramLabel() {
   fetch('http://localhost:5001/current_program')

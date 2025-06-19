@@ -38,5 +38,12 @@
         </library>
       </libraries>
     </data-source>
+    <data-source source="LOCAL" name="drinks.db" uuid="f1503ad4-2050-45af-9ca4-93789a59e00f">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\ko2an\Desktop\robot\robotProgram_Prototype2-master\robotProgram_Prototype2-master\DrinksRobot\DAL\Database\drinks.db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

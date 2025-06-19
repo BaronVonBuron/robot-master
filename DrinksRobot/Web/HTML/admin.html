@@ -361,13 +361,22 @@
 
                     li.onclick = () => {
                         const bottle_id = li.dataset.id;
-                        if (selectedIngredients.includes(bottle_id)) {
-                            selectedIngredients = selectedIngredients.filter(i => i !== bottle_id);
-                            li.classList.remove("selected");
-                        } else {
-                            selectedIngredients.push(bottle_id);
-                            li.classList.add("selected");
+                        selectedIngredients.push(bottle_id);
+
+                        // Find eller opret badge
+                        let countSpan = li.querySelector(".count");
+                        if (!countSpan) {
+                            countSpan = document.createElement("span");
+                            countSpan.className = "count";
+                            countSpan.style.marginLeft = "10px";
+                            li.appendChild(countSpan);
                         }
+
+                        // Opdater visning af antal
+                        const count = selectedIngredients.filter(id => id === bottle_id).length;
+                        countSpan.textContent = `x${count}`;
+
+                        li.classList.add("selected");
                     };
 
                     list.appendChild(li);

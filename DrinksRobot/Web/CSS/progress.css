@@ -13,23 +13,6 @@
     height: 100%;
 }
 
-.buttons{
-    position: relative;
-    z-index: 2;
-    text-transform: uppercase;
-    font-size: 35px;
-    font-weight: bold;
-    margin: 25px;
-    width: 20%;
-    height: 15%;
-}
-
-.buttonDiv {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}
 
 .DrinkIMG {
     height: 60%;
@@ -92,4 +75,34 @@
   border-radius: 12px;
   z-index: 1000;
   text-shadow: 1px 1px 3px black;
+}
+.buttonDiv {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+#backbutton {
+  background-color: #E9A900;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(233, 169, 0, 0.7), 0 0 30px rgba(233, 169, 0, 0.5), 0 0 45px rgba(233, 169, 0, 0.3);
+    transition: all 0.3s ease-in-out;
+  color: black;
+  padding: 24px 48px;      /* Increased padding for size */
+  font-size: 24px;         /* Larger text */
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
+
+#backbutton:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
 }
