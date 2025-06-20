@@ -66,7 +66,7 @@ window.onload = async function () {
         id: item.drink_id,
         name: item.drink_name,
         image: "../Images/" + item.drink_image,
-        price: item.use_count, // Assuming use_count is used as price
+        //price: item.use_count, // Assuming use_count is used as price
         ingredients: item.bottles || [] // Handle ingredients if available
       }));
       updateDrinkDisplay();
@@ -101,7 +101,7 @@ window.onload = async function () {
         btn.innerHTML = `
             <h3>${drink.name}</h3>
             <img src="${drink.image}" alt="${drink.name}">
-            <p style="color: white; font-size: 26px;">
+            <p style="color: black; font-size: 26px;">
               ${drink.ingredients.map(ing => ing.title).join(", ")}
             </p>
         `;
