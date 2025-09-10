@@ -36,119 +36,94 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const ingredientsList = document.getElementById("ingredientsList");
     ingredients.forEach(ingredient => {
-    const li = document.createElement("li");
-    li.innerText = ingredient.title || "Ukendt ingrediens";
-    ingredientsList.appendChild(li);
+      const li = document.createElement("li");
+      li.innerText = (ingredient && ingredient.title) ? ingredient.title : "Ukendt ingrediens";
+      ingredientsList.appendChild(li);
     });
 });
 
 async function startProgress() {
-    const drinkId = localStorage.getItem("selectedDrinkId");
-
+    const drinkIdStr = localStorage.getItem("selectedDrinkId");
     const bottlesString = sessionStorage.getItem("selectedDrinkIngredients");
+    const scriptName = sessionStorage.getItem("selectedDrinkScript");
 
-    if (!drinkId || !bottlesString) {
-        alert("Drink eller flasker mangler. Prøv igen.");
-        return;
-    }
-    let drink_id = JSON.parse(drinkId)
+    const selectedDrinkName = sessionStorage.getItem("selectedDrinkName") || "Ukendt Drink";
+    const selectedDrinkImage = sessionStorage.getItem("selectedDrinkImage") || "../Images/default.png";
 
-    let bottle_ids;
-    try {
-        const bottles = JSON.parse(bottlesString);
-        bottle_ids = bottles.map(bottle => bottle.bottle_id);
-    } catch (error) {
-        console.error("Fejl ved parsing af flasker:", error);
+    if (!drinkIdStr) {
+        alert("Drink mangler. Prøv igen.");
         return;
     }
 
+    let drink_id;
+    try { drink_id = JSON.parse(drinkIdStr); } catch { drink_id = Number(drinkIdStr) || drinkIdStr; }
+
+    let bottle_ids = [];
+    let ingredientTitles = [];
     try {
-        window.location.href = "progressMix.html";
-        await fetch('http://localhost:5001/api/mixdrink', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ bottles: bottle_ids })
-        });
-
-
-        await fetch('http://localhost:5001/api/add_bottle_counts', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ bottles: bottle_ids })
-        });
-
-        await fetch('http://localhost:5001/api/add_count_drink', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ drink_id: drink_id })
-        });
-        //window.location.href = "progressFL.html"; // Proceed if everything succeeded
-
-
-
+        const bottles = JSON.parse(bottlesString || "[]");
+        bottle_ids = bottles.map(bottle => bottle.bottle_id).filter(Boolean);
+        ingredientTitles = bottles.map(bottle => bottle.title).filter(Boolean);
     } catch (error) {
-        console.error("Fejl under en af forespørgslerne:", error);
-        alert("Noget gik galt. Se konsollen for detaljer.");
+        console.warn("Fejl ved parsing af flasker:", error);
     }
 
+    try {
+        if (scriptName) {
+            // Store data for finished-drink progress page
+            sessionStorage.setItem("progressDrinkName", selectedDrinkName);
+            sessionStorage.setItem("progressDrinkImage", selectedDrinkImage);
+            sessionStorage.setItem("progressDrinkIngredients", JSON.stringify(ingredientTitles));
 
-    /*try {
-        // 1. Hent flasker tilknyttet drinken
-        const bottlesResponse = await fetch(`http://localhost:5001/api/drink_bottles/${drinkId}`);
-        if (!bottlesResponse.ok) {
-            throw new Error(`Fejl ved hentning af flasker: ${bottlesResponse.status}`);
+            // Start single script program before redirect
+            await fetch('http://localhost:5001/api/run_program', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ script: scriptName })
+            });
+
+            // Update drink count
+            await fetch('http://localhost:5001/api/add_count_drink', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ drink_id: drink_id })
+            });
+
+            // Now navigate to progress page
+            window.location.href = "progressFL.html";
+        } else {
+            // Store data for mix-by-bottles progress page
+            sessionStorage.setItem("drinkName", selectedDrinkName);
+            sessionStorage.setItem("selectedIngredients", JSON.stringify(ingredientTitles));
+
+            // Start mix by bottle ids before redirect
+            await fetch('http://localhost:5001/api/mixdrink', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ bottles: bottle_ids })
+            });
+
+            // Update bottle counts
+            await fetch('http://localhost:5001/api/add_bottle_counts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ bottles: bottle_ids })
+            });
+
+            // Update drink count
+            await fetch('http://localhost:5001/api/add_count_drink', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ drink_id: drink_id })
+            });
+
+            // Navigate to progress page
+            window.location.href = "progressMix.html";
         }
-
-        const bottleIds = await bottlesResponse.json();
-
-        if (!Array.isArray(bottleIds) || bottleIds.length === 0) {
-            alert("Ingen flasker fundet for denne drink.");
-            return;
-        }
-
-        // 2. Hent URScripts for hver flaske
-        const allScripts = [];
-
-        for (const bottle of bottleIds) {
-            const scriptResponse = await fetch(`http://localhost:5001/api/scripts/${bottle.bottle_id}`);
-            if (!scriptResponse.ok) {
-                console.warn(`Fejl ved hentning af URScripts for flaske ${bottle.bottle_id}: ${scriptResponse.status}`);
-                continue;
-            }
-
-            const scripts = await scriptResponse.json();
-
-            if (!Array.isArray(scripts) || scripts.length !== 3) {
-                console.warn(`Ugyldige URScripts for flaske ${bottle.bottle_id}`);
-                continue;
-            }
-
-            allScripts.push(...scripts);
-        }
-
-        if (allScripts.length === 0) {
-            alert("Ingen URScripts fundet for denne drink.");
-            return;
-        }
-
-        // 3. Send samlet kø af URScripts til backend
-        const runResponse = await fetch('http://localhost:5001/run_urscript', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ scripts: allScripts })
-        });
-
-        if (!runResponse.ok) {
-            throw new Error(`Fejl ved afsendelse af URScripts: ${runResponse.status}`);
-        }
-
-        // 4. Gå til progress side
-        window.location.href = "progressFL.html";
-
-    } catch (err) {
-        console.error("Fejl under startProgress:", err);
+    } catch (error) {
+        console.error("Fejl under start:", error);
         alert("Noget gik galt. Se konsollen for detaljer.");
-    }*/
+    }
 }
 </script>
 </body>

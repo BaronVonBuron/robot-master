@@ -13,14 +13,20 @@ class DrinkContext:
         conn.execute("PRAGMA foreign_keys = ON;")
         return conn
 
-    def create_drink_with_content(self, drink_name, img, bottles, use_count):
+    def create_drink_with_content(self, drink_name, img, bottles, use_count, script_name=None):
         conn = self.get_connection()
         cursor = conn.cursor()
         try:
-            cursor.execute("""
-                INSERT INTO DrinkTable (DrinkName, Img, UseCount)
-                VALUES (?, ?, ?)
-            """, (drink_name, img, use_count))
+            if script_name is not None:
+                cursor.execute("""
+                    INSERT INTO DrinkTable (DrinkName, Img, UseCount, ScriptName)
+                    VALUES (?, ?, ?, ?)
+                """, (drink_name, img, use_count, script_name))
+            else:
+                cursor.execute("""
+                    INSERT INTO DrinkTable (DrinkName, Img, UseCount)
+                    VALUES (?, ?, ?)
+                """, (drink_name, img, use_count))
             drink_id = cursor.lastrowid
 
             for bottle_id in bottles:
@@ -114,6 +120,7 @@ class DrinkContext:
                 d.DrinkName,
                 d.Img,
                 d.UseCount,
+                d.ScriptName,
                 b.BottleId,
                 b.Title
             FROM DrinkTable d
@@ -132,14 +139,47 @@ class DrinkContext:
                     "DrinkName": row[1],
                     "Img": row[2],
                     "UseCount": row[3],
+                    "ScriptName": row[4],
                     "Bottles": []
                 }
-            if row[3] is not None:
+            # row[5] may be None if no bottles
+            if row[5] is not None:
                 drinks[drink_id]["Bottles"].append({
-                    "BottleId": row[4],
-                    "Title": row[5]
+                    "BottleId": row[5],
+                    "Title": row[6]
                 })
         return list(drinks.values())
+
+    def update_script_name(self, drink_id: int, script_name: str) -> bool:
+        conn = self.get_connection()
+        try:
+            cur = conn.cursor()
+            cur.execute("UPDATE DrinkTable SET ScriptName = ? WHERE DrinkId = ?", (script_name, drink_id))
+            conn.commit()
+            return cur.rowcount > 0
+        except Exception as e:
+            conn.rollback()
+            print(f"Error updating ScriptName for drink {drink_id}: {e}")
+            return False
+        finally:
+            conn.close()
+
+    def delete_drink(self, drink_id: int) -> bool:
+        """Delete a drink and its content rows. Returns True if a row was deleted."""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("DELETE FROM ContentTable WHERE DrinkId = ?", (drink_id,))
+            cursor.execute("DELETE FROM DrinkTable WHERE DrinkId = ?", (drink_id,))
+            affected = cursor.rowcount
+            conn.commit()
+            return affected > 0
+        except Exception as e:
+            conn.rollback()
+            print(f"Error deleting drink {drink_id}: {e}")
+            return False
+        finally:
+            conn.close()
 
 
 

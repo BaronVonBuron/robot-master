@@ -15,23 +15,17 @@ class BottleLogic:
         return bottle_list
 
     def get_nonalch_bottles(self):
-        bottles = bottle_context.get_all_bottles()
-        nonalch_bottles = []
-        for bottle in bottles:
-            if bottle.type == "nonalch":
-                nonalch_bottles.append(bottle)
-        return nonalch_bottles
+        all_bottles = self.get_bottles()
+        types = {"sirup", "juice_sodavand"}
+        return [b for b in all_bottles if str(b.get("bottle_type", "")).lower() in types]
 
     def get_alch_bottles(self):
-        bottles = bottle_context.get_all_bottles()
-        alch_bottles = []
-        for bottle in bottles:
-            if bottle.type == "alch":
-                alch_bottles.append(bottle)
+        all_bottles = self.get_bottles()
+        return [b for b in all_bottles if str(b.get("bottle_type", "")).lower() == "alkohol"]
 
     def delete_bottle(self, bottle_id):
         toDelete = bottle_id
-        bottle_context.delete_bottle(toDelete)
+        return bottle_context.delete_bottle(toDelete)
 
     def add_bottle(self, position, urscript_get, urscript_pour, urscript_back, img, title, bottle_type):
         use_count = 0

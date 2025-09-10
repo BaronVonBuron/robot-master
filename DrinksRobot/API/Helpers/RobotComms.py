@@ -7,16 +7,30 @@ class RobotComms:
         self.DASHBOARD_PORT = 29999
         self.SECONDARY_PORT = 30002
 
+    def _send_dashboard_cmd(self, cmd: str) -> str:
+        """Helper to send a single Dashboard command and return the response text."""
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(5)
+        s.connect((self.robotIP, self.DASHBOARD_PORT))
+        # read greeting
+        try:
+            _ = s.recv(1024)
+        except Exception:
+            pass
+        s.sendall((cmd + "\n").encode('utf-8'))
+        try:
+            resp = s.recv(4096).decode('utf-8').strip()
+        except Exception:
+            resp = ""
+        finally:
+            s.close()
+        return resp
+
     def load_program(self, program_name):
         """Loader et program uden at starte."""
         try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.settimeout(5)
-            s.connect((self.robotIP, self.DASHBOARD_PORT))
-            s.recv(1024)
-            s.sendall(f"load {program_name}\n".encode('utf-8'))
-            print(s.recv(1024).decode().strip())
-            s.close()
+            resp = self._send_dashboard_cmd(f"load {program_name}")
+            print(resp)
             print(f"{program_name} loaded (klar til at spille)")
         except Exception as e:
             print(f"Fejl ved load program: {e}")
@@ -24,16 +38,31 @@ class RobotComms:
     def play_program(self):
         """Starter det loaded program."""
         try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.settimeout(5)
-            s.connect((self.robotIP, self.DASHBOARD_PORT))
-            s.recv(1024)
-            s.sendall(b"play\n")
-            print(s.recv(1024).decode().strip())
-            s.close()
+            resp = self._send_dashboard_cmd("play")
+            print(resp)
             print("Program startet (play).")
         except Exception as e:
             print(f"Fejl ved play program: {e}")
+
+    def pause_program(self) -> bool:
+        """Pause the currently running program via Dashboard."""
+        try:
+            resp = self._send_dashboard_cmd("pause")
+            print(f"Pause respons: {resp}")
+            return True
+        except Exception as e:
+            print(f"Fejl ved pause program: {e}")
+            return False
+
+    def resume_program(self) -> bool:
+        """Resume (play) the currently loaded program via Dashboard."""
+        try:
+            resp = self._send_dashboard_cmd("play")
+            print(f"Resume respons: {resp}")
+            return True
+        except Exception as e:
+            print(f"Fejl ved resume program: {e}")
+            return False
 
     def load_and_run_program(self, program_name):
         """(Brugt i færdige drinks menu)"""

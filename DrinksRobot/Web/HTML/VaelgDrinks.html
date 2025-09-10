@@ -66,8 +66,12 @@ window.onload = async function () {
         id: item.drink_id,
         name: item.drink_name,
         image: "../Images/" + item.drink_image,
-        //price: item.use_count, // Assuming use_count is used as price
-        ingredients: item.bottles || [] // Handle ingredients if available
+        script: item.script_name || null,
+        // Normalize bottles to frontend shape
+        ingredients: (item.bottles || []).map(b => ({
+          bottle_id: b.bottle_id ?? b.BottleId,
+          title: b.title ?? b.Title
+        }))
       }));
       updateDrinkDisplay();
     } else {
@@ -102,10 +106,10 @@ window.onload = async function () {
             <h3>${drink.name}</h3>
             <img src="${drink.image}" alt="${drink.name}">
             <p style="color: black; font-size: 26px;">
-              ${drink.ingredients.map(ing => ing.title).join(", ")}
+              ${(drink.ingredients || []).map(ing => ing.title).join(", ")}
             </p>
         `;
-        btn.onclick = () => sendDrinkInfo(drink.name, drink.image, drink.ingredients || [], drink.id); // Pass drink.id
+        btn.onclick = () => sendDrinkInfo(drink.name, drink.image, drink.ingredients || [], drink.id, drink.script);
         drinkList.appendChild(btn);
     }
   }
@@ -120,7 +124,7 @@ window.onload = async function () {
     updateDrinkDisplay();
   }
 
-  function sendDrinkInfo(drinkName, drinkImage, drinkIngredients, drinkId) {
+  function sendDrinkInfo(drinkName, drinkImage, drinkIngredients, drinkId, scriptName) {
     if (!drinkId) {
         console.error("Drink ID is missing.");
         return;
@@ -129,6 +133,7 @@ window.onload = async function () {
     sessionStorage.setItem("selectedDrinkName", drinkName);
     sessionStorage.setItem("selectedDrinkImage", drinkImage);
     sessionStorage.setItem("selectedDrinkIngredients", JSON.stringify(drinkIngredients));
+    if (scriptName) sessionStorage.setItem("selectedDrinkScript", scriptName); else sessionStorage.removeItem("selectedDrinkScript");
     window.location.href = "valgtDrink.html"; // Navigate to the new page
   }
 </script>

@@ -58,9 +58,11 @@ class BottleContext:
                 DELETE FROM BottleTable
                 WHERE BottleId = ?
             """, (bottle_id,))
+        affected = cursor.rowcount
         conn.commit()
         conn.close()
-        print(f"Flaske med ID '{bottle_id}' blev slettet.")
+        print(f"Flaske med ID '{bottle_id}' blev slettet. Affected: {affected}")
+        return affected > 0
 
     def get_Bottles_with_id(self, bottle_ids):
         conn = self.get_connection()
