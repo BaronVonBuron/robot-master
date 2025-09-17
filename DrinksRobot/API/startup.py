@@ -1,3 +1,11 @@
+import sys
+import os
+from pathlib import Path
+import threading
+
+# Ensure repository root is on sys.path before importing DrinksRobot package
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
@@ -9,16 +17,11 @@ from DrinksRobot.API.Helpers.ScriptQueue import ScriptQueue
 from DrinksRobot.API.Helpers.RobotState import RobotState
 from DrinksRobot.API.Helpers.logger import get_logger
 
-import sys
-import os
-import threading
-from pathlib import Path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
 from DrinksRobot.API.Controller.DrinksController import DrinksController
 from DrinksRobot.API.Controller.BottleController import BottleController
 from DrinksRobot.API.Controller.LogController import LogController
 from DrinksRobot.API.Controller.RobotController import create_robot_controller
+from DrinksRobot.API.Controller.MenuController import MenuController
 from DrinksRobot.API.Helpers.db_migrations import ensure_db_schema
 
 log = get_logger("startup")
@@ -70,6 +73,7 @@ app.register_blueprint(BottleController, url_prefix='/api')
 app.register_blueprint(DrinksController, url_prefix='/api')
 app.register_blueprint(LogController, url_prefix='/api')
 app.register_blueprint(create_robot_controller(robot_logic), url_prefix='/api')
+app.register_blueprint(MenuController, url_prefix='/api')
 
 @app.route('/run_drink', methods=['POST'])
 def run_drink():

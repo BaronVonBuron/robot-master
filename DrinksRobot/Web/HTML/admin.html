@@ -14,6 +14,8 @@
     <button onclick="deleteBottle()">Slet flaske</button>
     <button onclick="addDrink()">Tilføj drink</button>
     <button onclick="deleteDrink()">Slet drink</button>
+    <button onclick="editDrinkScript()">Rediger script</button>
+    <button onclick="openMenu()">Menuer</button>
     <button onclick="getAllBottles(), getAllDrinks()">Opdater</button>
 </div>
 
@@ -37,6 +39,7 @@
             <thead>
             <tr>
                 <th>Drink</th>
+                <th>Script</th>
                 <th>Kørt</th>
             </tr>
             </thead>
@@ -58,6 +61,40 @@
             <!-- Antal indsættes her -->
             </tbody>
         </table>
+    </div>
+</div>
+
+<!-- Menu Administration Modal -->
+<div id="menuModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:1000;">
+    <div style="background:white; padding:16px; margin:40px auto; width:90%; max-width:1100px; position:relative;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2>Menuadministration</h2>
+            <button onclick="closeMenuModal()">Luk</button>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px;">
+            <div style="border:1px solid #ccc; padding:10px;">
+                <h3>Menuer</h3>
+                <div style="display:flex; gap:8px; margin-bottom:8px;">
+                    <input type="text" id="newMenuName" placeholder="Navn på ny menu" style="flex:1;">
+                    <button onclick="createMenu()">Opret</button>
+                </div>
+                <ul id="menusList" style="list-style:none; padding:0; max-height:300px; overflow:auto; border:1px solid #ddd;"></ul>
+                <button style="margin-top:8px;" onclick="activateSelectedMenu()">Aktiver valgt menu</button>
+            </div>
+            <div style="border:1px solid #ccc; padding:10px;">
+                <h3>Katalog (alle flasker)</h3>
+                <input type="text" id="catalogFilter" placeholder="Filtrér..." oninput="filterCatalog()" style="width:100%; box-sizing:border-box;">
+                <ul id="catalogList" style="list-style:none; padding:0; max-height:340px; overflow:auto; border:1px solid #ddd; margin-top:8px;"></ul>
+                <div style="display:flex; gap:8px; align-items:center; margin-top:8px;">
+                    <input type="number" id="menuPosition" placeholder="Placering (valgfrit)" style="width:170px;">
+                    <button onclick="addSelectedCatalogToMenu()">Tilføj til menu</button>
+                </div>
+            </div>
+            <div style="border:1px solid #ccc; padding:10px;">
+                <h3>Flasker i valgt menu</h3>
+                <ul id="menuBottlesList" style="list-style:none; padding:0; max-height:380px; overflow:auto; border:1px solid #ddd;"></ul>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -124,6 +161,9 @@
             <label>Billede:</label>
             <input type="text" id="image" placeholder="picture"><br><br>
 
+            <label>Scriptnavn (valgfrit):</label>
+            <input type="text" id="script_name" placeholder="f.eks. finished_drink.urp"><br><br>
+
             <label>Ingredienser:</label>
             <ul id="ingredientsList" style="list-style:none; padding:0; max-height:150px; overflow-y:auto; border:1px solid #ccc;"></ul>
             <br>
@@ -145,6 +185,28 @@
     </div>
 </div>
 
+<!-- Rediger Script Modal -->
+<div id="editScriptModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:1000;">
+    <div style="background:white; padding:20px; margin:100px auto; width:420px; position:relative;">
+        <h2>Rediger Script for Drink</h2>
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+            <div style="flex:1;">
+                <strong>Vælg drink:</strong>
+                <ul id="scriptDrinkList" style="list-style: none; padding: 0; max-height: 220px; overflow-y: auto; border: 1px solid #ccc;"></ul>
+            </div>
+            <div style="flex:1;">
+                <label>Nyt scriptnavn:</label>
+                <input type="text" id="newScriptName" placeholder="tom for at fjerne" style="width:100%; box-sizing:border-box;">
+                <p style="font-size:12px; color:#555;">Sæt et filnavn som robotten kan loade, f.eks. mydrink.urp. Tomt felt fjerner scriptet.</p>
+            </div>
+        </div>
+        <div style="margin-top:12px; display:flex; gap:8px;">
+            <button onclick="confirmEditScript()">Gem</button>
+            <button onclick="closeEditScriptModal()">Annuller</button>
+        </div>
+    </div>
+    
+</div>
 
 
 <script>
@@ -160,6 +222,9 @@
 
     // Dummy funktioner til andre knapper
     let selectedBottleId = null;
+    let selectedScriptDrinkId = null;
+    let selectedMenuId = null;
+    let selectedCatalogBottleId = null;
 
 
     // Åbner modal og henter flasker
@@ -233,8 +298,10 @@
                     const row = drinksTable.insertRow();
                     const cell1 = row.insertCell(0);
                     const cell2 = row.insertCell(1);
+                    const cell3 = row.insertCell(2);
                     cell1.textContent = drink.drink_name;  // Display drink name
-                    cell2.textContent = drink.use_count;  // Display count
+                    cell2.textContent = drink.script_name || "-"; // Display script name if any
+                    cell3.textContent = drink.use_count;  // Display count
                 });
             })
             .catch(error => console.error("Error fetching drinks:", error));
@@ -314,9 +381,11 @@
 
         const name = document.getElementById("drinkName").value;
         const image = document.getElementById("image").value;
+        const scriptName = document.getElementById("script_name").value.trim();
 
-        if (selectedIngredients.length === 0) {
-            alert("Vælg mindst én ingrediens!");
+        // Tillad enten ingredienser eller scriptnavn (færdig drink)
+        if (selectedIngredients.length === 0 && scriptName === "") {
+            alert("Vælg mindst én ingrediens eller angiv et scriptnavn!");
             return;
         }
 
@@ -324,6 +393,9 @@
         formData.append("drink_name", name);
         formData.append("img", image);
         formData.append("bottles", JSON.stringify(selectedIngredients));
+        if (scriptName !== "") {
+            formData.append("script_name", scriptName);
+        }
 
         try {
             const response = await fetch("http://localhost:5001/api/add_drink", {
@@ -339,6 +411,8 @@
             alert("Drink tilføjet!");
 
             closeAddDrinkModal();
+            document.getElementById("addDrinkForm").reset();
+            getAllDrinks();
         } catch (err) {
             console.error("Fejl ved tilføjelse af drink:", err);
             alert("Kunne ikke tilføje drinken.");
@@ -452,6 +526,61 @@
             });
     }
 
+    function editDrinkScript() {
+        selectedScriptDrinkId = null;
+        const list = document.getElementById("scriptDrinkList");
+        list.innerHTML = "";
+        document.getElementById("newScriptName").value = "";
+        fetch("http://localhost:5001/api/get_drinks")
+            .then(r => r.json())
+            .then(drinks => {
+                drinks.forEach(drink => {
+                    const li = document.createElement("li");
+                    li.textContent = `${drink.drink_name}  —  Script: ${drink.script_name || '-'}`;
+                    li.dataset.id = drink.drink_id;
+                    li.onclick = () => {
+                        [...list.children].forEach(c => c.classList.remove("selected"));
+                        li.classList.add("selected");
+                        selectedScriptDrinkId = drink.drink_id;
+                        document.getElementById("newScriptName").value = drink.script_name || "";
+                    };
+                    list.appendChild(li);
+                });
+                document.getElementById("editScriptModal").style.display = "block";
+            })
+            .catch(err => {
+                console.error("Fejl ved hentning af drinks:", err);
+                alert("Kunne ikke hente drinks.");
+            });
+    }
+
+    function closeEditScriptModal() {
+        document.getElementById("editScriptModal").style.display = "none";
+    }
+
+    function confirmEditScript() {
+        if (!selectedScriptDrinkId) {
+            alert("Vælg en drink først!");
+            return;
+        }
+        const newName = document.getElementById("newScriptName").value;
+        fetch(`http://localhost:5001/api/drinks/${selectedScriptDrinkId}/script`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ script_name: newName })
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Opdatering fejlede');
+            alert('Script opdateret');
+            closeEditScriptModal();
+            getAllDrinks();
+        })
+        .catch(err => {
+            console.error('Fejl ved opdatering af script:', err);
+            alert('Kunne ikke opdatere script.');
+        });
+    }
+
     function startRobot() {
         console.log("Start");
     }
@@ -488,6 +617,153 @@
             .catch(error => {
                 console.error('Network error:', error);
             });
+    }
+
+    // --- Menu administration ---
+    function openMenu() {
+        selectedMenuId = null;
+        selectedCatalogBottleId = null;
+        document.getElementById("menuModal").style.display = "block";
+        loadMenus();
+        loadCatalog();
+        document.getElementById("menuBottlesList").innerHTML = "<li style='padding:6px;color:#666'>Vælg en menu for at se indhold</li>";
+    }
+
+    function closeMenuModal() {
+        document.getElementById("menuModal").style.display = "none";
+    }
+
+    function createMenu() {
+        const name = document.getElementById("newMenuName").value.trim();
+        if (!name) { alert("Indtast et navn til menuen"); return; }
+        fetch('http://localhost:5001/api/menus', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ menu_name: name })
+        }).then(r => {
+            if (!r.ok) throw new Error('Kunne ikke oprette menu');
+            return r.json();
+        }).then(() => {
+            document.getElementById("newMenuName").value = "";
+            loadMenus();
+        }).catch(err => {
+            console.error(err);
+            alert('Oprettelse fejlede');
+        });
+    }
+
+    function loadMenus() {
+        fetch('http://localhost:5001/api/menus')
+            .then(r => r.json())
+            .then(menus => {
+                const ul = document.getElementById('menusList');
+                ul.innerHTML = '';
+                menus.forEach(m => {
+                    const li = document.createElement('li');
+                    li.style.padding = '6px';
+                    li.style.cursor = 'pointer';
+                    li.textContent = `${m.menu_name}${m.is_active ? ' (aktiv)' : ''}`;
+                    li.onclick = () => {
+                        [...ul.children].forEach(c => c.classList.remove('selected'));
+                        li.classList.add('selected');
+                        selectedMenuId = m.menu_id;
+                        loadMenuBottles();
+                    };
+                    ul.appendChild(li);
+                });
+            })
+            .catch(err => console.error('Fejl ved hentning af menuer', err));
+    }
+
+    function activateSelectedMenu() {
+        if (!selectedMenuId) { alert('Vælg en menu først'); return; }
+        fetch(`http://localhost:5001/api/menus/${selectedMenuId}/activate`, { method: 'POST' })
+            .then(r => { if (!r.ok) throw new Error(); loadMenus(); })
+            .catch(() => alert('Kunne ikke aktivere menu'));
+    }
+
+    function loadCatalog() {
+        fetch('http://localhost:5001/api/catalog')
+            .then(r => r.json())
+            .then(items => {
+                const ul = document.getElementById('catalogList');
+                ul.innerHTML = '';
+                items.forEach(b => {
+                    const li = document.createElement('li');
+                    li.style.padding = '6px';
+                    li.style.cursor = 'pointer';
+                    li.textContent = `${b.title} (${b.bottle_type || 'ukendt'})`;
+                    li.dataset.title = (b.title || '').toLowerCase();
+                    li.onclick = () => {
+                        [...ul.children].forEach(c => c.classList.remove('selected'));
+                        li.classList.add('selected');
+                        selectedCatalogBottleId = b.catalog_bottle_id;
+                    };
+                    ul.appendChild(li);
+                });
+            })
+            .catch(err => console.error('Fejl ved hentning af katalog', err));
+    }
+
+    function filterCatalog() {
+        const q = (document.getElementById('catalogFilter').value || '').toLowerCase();
+        const ul = document.getElementById('catalogList');
+        [...ul.children].forEach(li => {
+            const t = li.dataset.title || '';
+            li.style.display = t.includes(q) ? '' : 'none';
+        });
+    }
+
+    function addSelectedCatalogToMenu() {
+        if (!selectedMenuId) { alert('Vælg en menu først'); return; }
+        if (!selectedCatalogBottleId) { alert('Vælg en flaske i kataloget'); return; }
+        const posRaw = document.getElementById('menuPosition').value;
+        const position = posRaw ? parseInt(posRaw) : null;
+        fetch(`http://localhost:5001/api/menus/${selectedMenuId}/bottles`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ catalog_bottle_id: selectedCatalogBottleId, position })
+        }).then(r => {
+            if (!r.ok) throw new Error();
+            loadMenuBottles();
+        }).catch(() => alert('Kunne ikke tilføje flaske til menu'));
+    }
+
+    function loadMenuBottles() {
+        if (!selectedMenuId) return;
+        fetch(`http://localhost:5001/api/menus/${selectedMenuId}/bottles`)
+            .then(r => r.json())
+            .then(items => {
+                const ul = document.getElementById('menuBottlesList');
+                ul.innerHTML = '';
+                if (items.length === 0) {
+                    ul.innerHTML = "<li style='padding:6px;color:#666'>Ingen flasker i denne menu endnu</li>";
+                    return;
+                }
+                items.forEach(b => {
+                    const li = document.createElement('li');
+                    li.style.display = 'flex';
+                    li.style.alignItems = 'center';
+                    li.style.justifyContent = 'space-between';
+                    li.style.padding = '6px';
+                    const span = document.createElement('span');
+                    span.textContent = `#${b.position ?? '-'}  ${b.title}`;
+                    const btn = document.createElement('button');
+                    btn.textContent = 'Fjern';
+                    btn.onclick = () => removeMenuBottle(b.catalog_bottle_id);
+                    li.appendChild(span);
+                    li.appendChild(btn);
+                    ul.appendChild(li);
+                });
+            })
+            .catch(err => console.error('Fejl ved hentning af menuflasker', err));
+    }
+
+    function removeMenuBottle(catalogBottleId) {
+        if (!selectedMenuId) return;
+        fetch(`http://localhost:5001/api/menus/${selectedMenuId}/bottles/${catalogBottleId}`, { method: 'DELETE' })
+            .then(r => { if (!r.ok) throw new Error(); loadMenuBottles(); })
+            .catch(() => alert('Kunne ikke fjerne flaske fra menu'));
     }
 
 </script>

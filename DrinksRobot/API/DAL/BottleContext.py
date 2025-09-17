@@ -48,7 +48,23 @@ class BottleContext:
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """, (position, urscript_get, urscript_pour, urscript_back, img, title, bottle_type, use_count))
         conn.commit()
-        conn.close()
+        # Also ensure this bottle exists in BottleCatalog (by Title)
+        try:
+            cursor.execute("SELECT CatalogBottleId FROM BottleCatalog WHERE Title = ?", (title,))
+            row = cursor.fetchone()
+            if not row:
+                cursor.execute(
+                    """
+                    INSERT INTO BottleCatalog (Title, BottleType, Img, URScriptGet, URScriptPour, URScriptBack)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    """,
+                    (title, bottle_type, img, urscript_get, urscript_pour, urscript_back)
+                )
+                conn.commit()
+        except Exception as e:
+            print("Warning: could not sync to BottleCatalog:", e)
+        finally:
+            conn.close()
         print("Flaske oprettet.")
 
     def delete_bottle(self, bottle_id):

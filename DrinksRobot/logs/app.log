@@ -1,0 +1,16 @@
+2025-09-17 13:00:50,983 INFO startup - Starting with robot IP: 192.168.0.101" #ip robot
+2025-09-17 13:00:50,991 INFO startup - Backend starting on 0.0.0.0:5001
+2025-09-17 13:02:16,808 INFO RobotLogic - Resuming robot
+2025-09-17 13:02:16,809 INFO RobotController - Resume requested -> {'status': 'resumed', 'ok': False}
+2025-09-17 13:02:17,275 INFO RobotLogic - Resuming robot
+2025-09-17 13:02:17,276 INFO RobotController - Resume requested -> {'status': 'resumed', 'ok': False}
+2025-09-17 13:02:18,483 INFO RobotLogic - Pausing robot
+2025-09-17 13:02:18,483 INFO RobotController - Pause requested -> {'status': 'paused', 'ok': False}
+2025-09-17 13:10:36,815 INFO startup - Starting with robot IP: 192.168.0.101" #ip robot
+2025-09-17 13:10:36,826 INFO startup - Backend starting on 0.0.0.0:5001
+2025-09-17 13:11:09,234 INFO startup - Starting with robot IP: 192.168.0.101" #ip robot
+2025-09-17 13:11:09,243 INFO startup - Backend starting on 0.0.0.0:5001
+2025-09-17 13:14:15,368 INFO RobotLogic - Resuming robot
+2025-09-17 13:14:15,368 INFO RobotController - Resume requested -> {'status': 'resumed', 'ok': False}
+2025-09-17 13:14:21,223 INFO RobotLogic - Pausing robot
+2025-09-17 13:14:21,223 INFO RobotController - Pause requested -> {'status': 'paused', 'ok': False}
